@@ -1,3 +1,7 @@
 Little prototype streaming audio from the microphone on android device to a RTMP server.
 
 FFMPEG is wrapped and accessed via java using pipes :)
+
+
+http://www.youtube.com/watch?v=pqUUL0QwuMo
+
