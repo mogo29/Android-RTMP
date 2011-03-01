@@ -1,5 +1,5 @@
 /*
- * Camundo <http://www.camundo..com> Copyright (C) 2011  Wouter Van der Beken.
+ * Camundo <http://www.camundo.com> Copyright (C) 2011  Wouter Van der Beken.
  *
  * This file is part of Camundo.
  *
@@ -31,31 +31,26 @@ import android.util.Log;
 
 public class FFMPEGRtmpSubscriber extends Thread{
 
-	private static final String NAME = "FFMPEGRtmpSubscriber";
+	private static final String TAG = "FFMPEGRtmpSubscriber";
 	
 	private FFMPEGOutputPipe pipe;
 	private AudioTrack audioTrack;
-	
-	private static int BUFFER_LENGTH = 1024 * 4;//for WAV audio this is ok?
-	
-    
+	 
+
     public FFMPEGRtmpSubscriber( FFMPEGOutputPipe pipe ) {
     	this.pipe = pipe;
     }
     
-    
-    
+        
     @Override
     public void run() {
         try {
-        	
-        	
-            
+        	//hmmm can always try
         	pipe.setPriority(MAX_PRIORITY);
             pipe.start();
             
             while( !pipe.processRunning() ) {
-            	Log.i( NAME, "[ run() ] pipe not yet running, waiting.");
+            	Log.i( TAG, "[ run() ] pipe not yet running, waiting.");
             	try {
             		Thread.sleep(1000);
             	}
@@ -64,26 +59,28 @@ public class FFMPEGRtmpSubscriber extends Thread{
             	}
             }
             
-            int minBufferSize = AudioTrack.getMinBufferSize(AudioCodec.PCM_S16LE.RATE_11025, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT) *2 ;
-            audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, AudioCodec.PCM_S16LE.RATE_11025, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize * 4, AudioTrack.MODE_STREAM);
+            int minBufferSize = AudioTrack.getMinBufferSize(AudioCodec.PCM_S16LE.RATE_11025, 
+            													AudioFormat.CHANNEL_CONFIGURATION_MONO, 
+            													AudioFormat.ENCODING_PCM_16BIT) * 2;
             
-            BUFFER_LENGTH = minBufferSize;
-            ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
+            audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 
+						            		AudioCodec.PCM_S16LE.RATE_11025, 
+						            		AudioFormat.CHANNEL_CONFIGURATION_MONO, 
+						            		AudioFormat.ENCODING_PCM_16BIT, 
+						            		minBufferSize * 4, 
+						            		AudioTrack.MODE_STREAM);
+            
+            ByteBuffer buffer = ByteBuffer.allocate(minBufferSize);
 		    buffer.order(ByteOrder.LITTLE_ENDIAN);
 		    
-            //byte[] buffer = new byte[BUFFER_LENGTH];
-            Log.d( NAME, "buffer length [" + BUFFER_LENGTH + "]");
+            Log.d( TAG, "buffer length [" + minBufferSize + "]");
         	int len;
             
-            //wait until minimum amount of data
+            //wait until minimum amount of data ( header is 44 )
             pipe.bootstrap( 100 );
-            
             
             int overallBytes = 0;
             boolean started = false;
-            
-            //Log.d( NAME, "info rate[" + info.rate + "] channels [" + info.channels + "] dataSize [" + info.dataSize + "]");
-            //BUFFER_LENGTH = info.dataSize;
             
            	while( (len = pipe.read(buffer.array(), buffer.arrayOffset(), buffer.capacity())) > 0 ) {
            		//Log.d(NAME, "[ run() ] len [" + len + "] buffer empty [" + pipe.available() + "]" );
@@ -94,21 +91,19 @@ public class FFMPEGRtmpSubscriber extends Thread{
            			audioTrack.play();
                     started = true;
                 }
-           		//audioTrack.flush();
            	}
-           	
             
         } 
         catch (IOException e) {
         	e.printStackTrace();
             Log.e(getClass().getName(), e.getMessage());
         }
-        Log.i( NAME, "[ run() ] done");
+        Log.i( TAG, "[ run() ] done");
     }
     
     
     public void shutdown(){
-    	Log.i( NAME , "[ shutdown() ] up is false");
+    	Log.i( TAG , "[ shutdown() ] up is false");
     	pipe.close();
     	audioTrack.flush();
         audioTrack.stop();

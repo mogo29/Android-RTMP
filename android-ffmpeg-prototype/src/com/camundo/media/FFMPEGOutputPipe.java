@@ -1,5 +1,5 @@
 /*
- * Camundo <http://www.camundo..com> Copyright (C) 2011  Wouter Van der Beken.
+ * Camundo <http://www.camundo.com> Copyright (C) 2011  Wouter Van der Beken.
  *
  * This file is part of Camundo.
  *
@@ -27,7 +27,7 @@ import android.util.Log;
 
 public class FFMPEGOutputPipe extends Thread {
 	
-	private static final String NAME = "FFMPEGOutputPipe";
+	private static final String TAG = "FFMPEGOutputPipe";
 	
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	
@@ -36,12 +36,10 @@ public class FFMPEGOutputPipe extends Thread {
 	private String command;
 	private boolean processRunning;
 	
-	private InputstreamReaderThread errorStreamReaderThread;
-	private InputstreamReaderThread inputStreamReaderThread;
+	//private InputstreamReaderThread errorStreamReaderThread;
+	//private InputstreamReaderThread inputStreamReaderThread;
 	
-	private boolean firstRead = false;
-	
-	
+		
 	private InputStream inputStream;
 	
 	
@@ -56,9 +54,9 @@ public class FFMPEGOutputPipe extends Thread {
 	
 	
 	public void bootstrap( int size ) throws IOException {
-		Log.i(NAME , "[ bootstrap() ] avl [" + available() + "]");
+		Log.i(TAG , "[ bootstrap() ] avl [" + available() + "]");
 		while ( available() < size ) {
-			Log.i(NAME , "[ bootstrap() ] avl [" + available() + "]");
+			Log.i(TAG , "[ bootstrap() ] avl [" + available() + "]");
 			try {
 				Thread.sleep(1000);
 			}
@@ -68,7 +66,7 @@ public class FFMPEGOutputPipe extends Thread {
 		}
 		int av = inputStream.available();
 		inputStream.read(new byte[av] , 0,  av);
-		Log.i(NAME , "[ bootstrap() ] avl after bootstrap read [" + available() + "]");
+		Log.i(TAG , "[ bootstrap() ] avl after bootstrap read [" + available() + "]");
 	}
 	
 	
@@ -98,7 +96,7 @@ public class FFMPEGOutputPipe extends Thread {
 	
 	
 	public void close() {
-		Log.i(NAME , "[ close() ] closing outputstream");
+		Log.i(TAG , "[ close() ] closing outputstream");
 		try {
 			if ( inputStream != null ) {
 				inputStream.close();
@@ -107,9 +105,9 @@ public class FFMPEGOutputPipe extends Thread {
 		catch( Exception e ){
 			e.printStackTrace();
 		}
-		if ( errorStreamReaderThread != null ) {
-			errorStreamReaderThread.finish();
-		}
+//		if ( errorStreamReaderThread != null ) {
+//			errorStreamReaderThread.finish();
+//		}
 		if ( process != null ) {
 			process.destroy();
 			process = null;
@@ -120,16 +118,16 @@ public class FFMPEGOutputPipe extends Thread {
 	@Override
 	public void run () {
         try {
-            	Log.d( NAME, "[ run() ] command [" + command + "]");
+            Log.d( TAG, "[ run() ] command [" + command + "]");
             process = Runtime.getRuntime().exec(  command , null);
             
             inputStream = process.getInputStream();
             //inputStreamReaderThread = new InputstreamReaderThread(process.getInputStream());
             //inputStream = inputStreamReaderThread.inputStream;
             
-            Log.d( NAME , "[ run() ] inputStream created");
+            //Log.d( NAME , "[ run() ] inputStream created");
             //errorStreamReaderThread = new InputstreamReaderThread(process.getErrorStream());
-            Log.d( NAME, "[ run() ] errorStreamReader created");
+            //Log.d( NAME, "[ run() ] errorStreamReader created");
              
             //inputStreamReaderThread.start();
             //errorStreamReaderThread.start();
@@ -165,7 +163,7 @@ public class FFMPEGOutputPipe extends Thread {
                  BufferedReader br = new BufferedReader(isr, 32);
                  String line;
                  while ((line = br.readLine()) != null) {
-                	 Log.d( NAME , line + LINE_SEPARATOR);
+                	 Log.d( TAG , line + LINE_SEPARATOR);
                  }
             }
             catch( Exception e ) {

@@ -1,5 +1,5 @@
 /*
- * Camundo <http://www.camundo..com> Copyright (C) 2011  Wouter Van der Beken.
+ * Camundo <http://www.camundo.com> Copyright (C) 2011  Wouter Van der Beken.
  *
  * This file is part of Camundo.
  *

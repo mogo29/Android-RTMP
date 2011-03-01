@@ -1,5 +1,5 @@
 /*
- * Camundo <http://www.camundo..com> Copyright (C) 2011  Wouter Van der Beken.
+ * Camundo <http://www.camundo.com> Copyright (C) 2011  Wouter Van der Beken.
  *
  * This file is part of Camundo.
  *
@@ -29,6 +29,7 @@ import android.util.Log;
 
 public class FFMPEGRtmpPublisher extends Thread{
 
+	public final static String TAG = "FFMPEGRtmpPublisher";
 	
 	private String socketAddress;
 	private FFMPEGInputPipe pipe;
@@ -55,7 +56,7 @@ public class FFMPEGRtmpPublisher extends Thread{
             pipe.start();
             
             while( !pipe.processRunning() ) {
-            	Log.i("CameraCaptureServer", "[ run() ] pipe not yet running, waiting.");
+            	Log.i(TAG, "[ run() ] pipe not yet running, waiting.");
             	try {
             		Thread.sleep(250);
             	}
@@ -65,9 +66,10 @@ public class FFMPEGRtmpPublisher extends Thread{
             }
             //write bootstrap
             pipe.writeBootstrap();
-            
+
             // its up
             up = true;
+            
             while (up) {
                 
                 receiver = server.accept();
@@ -75,10 +77,9 @@ public class FFMPEGRtmpPublisher extends Thread{
                 receiver.setReceiveBufferSize(BUFFER_LENGTH);
                 receiver.setSendBufferSize(BUFFER_LENGTH);
                 
-                
                 if (receiver != null) {
                     InputStream input = receiver.getInputStream();
-                    Log.i("FFMPEGRtmpPublisher", "[ run() ] input [" + input + "]");
+                    Log.i( TAG , "[ run() ] input [" + input + "]");
                     
                     int read = -1;
                     int available;
@@ -97,38 +98,38 @@ public class FFMPEGRtmpPublisher extends Thread{
                     }
                 }
                 else {
-                	Log.i("FFMPEGRtmpPublisher", "[ run() ] receiver is null!!!");
+                	Log.i( TAG, "[ run() ] receiver is null!!!");
                 }
             }
             if ( pipe != null ) {
-            	Log.i("FFMPEGRtmpPublisher", "[ run() ] closing pipe");
+            	Log.i( TAG, "[ run() ] closing pipe");
             	pipe.close();
             }
             else {
-            	Log.i("FFMPEGRtmpPublisher", "[ run() ] closing pipe not necessary, is already null");
+            	Log.i( TAG, "[ run() ] closing pipe not necessary, is already null");
             }
             
             if ( receiver != null ) {
-            	Log.i("FFMPEGRtmpPublisher", "[ run() ] closing receiver");
+            	Log.i( TAG, "[ run() ] closing receiver");
             	receiver.close();
             }
             else {
-            	Log.i("FFMPEGRtmpPublisher", "[ run() ] closing receiver not necessary, is already null");
+            	Log.i( TAG, "[ run() ] closing receiver not necessary, is already null");
             }
             
-            Log.i("FFMPEGRtmpPublisher", "[ run() ] closing server");
+            Log.i( TAG , "[ run() ] closing server");
             server.close();
         } 
         catch (IOException e) {
         	e.printStackTrace();
             Log.e(getClass().getName(), e.getMessage());
         }
-        Log.i("FFMPEGRtmpPublisher", "[ run() ] done");
+        Log.i( TAG , "[ run() ] done");
     }
     
     
     public void shutdown(){
-    	Log.i("FFMPEGRtmpPublisher", "[ shutdown() ] up is false");
+    	Log.i( TAG , "[ shutdown() ] up is false");
     	up = false;
     }
 
