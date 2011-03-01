@@ -155,6 +155,18 @@ public class FFMPEGWrapper {
 	 }
 	 
 	 
+	 //local ffmpeg cmd : ffmpeg -analyzeduration 0 -y -i rtmp://192.168.1.2:1935/camundo-test-server/kaka -vn -acodec libopencore_amrnb -ab 12.2k -ar 8000 -f 3gp test.3gp
+	 public FFMPEGOutputPipe getAudioOutputPipe( String publisherString ) {
+		 String command = data_location + ffmpeg + " -analyzeduration 0 -i " + publisherString + 
+		 				" -vn -acodec " + AudioCodec.AMRNB.name + 
+		 				" -ab " + AudioCodec.AMRNB.BITRATE_12_2k + 
+		 				" -ar " + AudioCodec.AMRNB.RATE_8000 + 
+		 				" -f amr pipe:2";
+		 FFMPEGOutputPipe pipe = new FFMPEGOutputPipe(command);
+		 return pipe;
+	 }
+	 
+	 
 
 	
 

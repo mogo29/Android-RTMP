@@ -20,6 +20,7 @@ package com.camundo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.AudioSource;
@@ -35,15 +36,24 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.camundo.media.FFMPEGInputPipe;
+import com.camundo.media.FFMPEGOutputPipe;
 import com.camundo.media.FFMPEGRtmpPublisher;
+import com.camundo.media.FFMPEGRtmpSubscriber;
 import com.camundo.media.FFMPEGWrapper;
+import com.camundo.util.NetworkUtils;
 
 public class FFMPEGPrototype extends Activity {
 	
 	private FFMPEGRtmpPublisher publisher;
+	private FFMPEGRtmpSubscriber subscriber;
+	
 	private MediaRecorder recorder;
+	private MediaPlayer player;
+	
+	
 	private LocalSocket localSocket;
 	
 	PowerManager.WakeLock wakeLock;
@@ -51,6 +61,7 @@ public class FFMPEGPrototype extends Activity {
 	private static final String LOCAL_SOCKET_ADDRESS_MIC = "microphoneCapture";
 	
 	private boolean capturing = false;
+	private boolean receiving = false;
 	
 	private EditText rtmpServerUrlText;
 
@@ -85,8 +96,8 @@ public class FFMPEGPrototype extends Activity {
         rtmpServerUrlText = (EditText)findViewById(R.id.rtmpServerUrl);
         rtmpServerUrlText.setText("rtmp://192.168.1.2:1935/camundo-test-server/kaka");
         
-        Button btnStatic = (Button)findViewById(R.id.startCaptureButton);
-		btnStatic.setOnClickListener(new OnClickListener() {
+        Button startCaptureButton = (Button)findViewById(R.id.startCaptureButton);
+        startCaptureButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if ( !capturing ) {
@@ -95,13 +106,34 @@ public class FFMPEGPrototype extends Activity {
 			}
 		});
 		
-		Button btnStatic2 = (Button)findViewById(R.id.stopCaptureButton);
-		btnStatic2.setOnClickListener(new OnClickListener() {
+		Button stopCaptureButton = (Button)findViewById(R.id.stopCaptureButton);
+		stopCaptureButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				stopCapture();
 			}
 		});
+		
+		
+		Button startSubscribeButton = (Button)findViewById(R.id.startSubscribeButton);
+		startSubscribeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if ( !receiving ) {
+					startSubscribe();
+				}
+			}
+		});
+		
+		Button stopSubscribeButton = (Button)findViewById(R.id.stopSubscribeButton);
+		stopSubscribeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				stopSubscribe();
+			}
+		});
+		
+		
 		 
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "streamingWakelock");
@@ -111,6 +143,9 @@ public class FFMPEGPrototype extends Activity {
     
     
     public void startCapture() {
+    	if ( NetworkUtils.isOnline(this)){
+    		Toast.makeText(getBaseContext(), "connect to internet first!", Toast.LENGTH_SHORT).show();
+    	}
     	try {
     		capturing = true;
     		wakeLock.acquire();
@@ -160,6 +195,7 @@ public class FFMPEGPrototype extends Activity {
     	}
     	catch( Exception e ) {
     		e.printStackTrace();
+    		capturing = false;
     	}
     }
     
@@ -182,10 +218,85 @@ public class FFMPEGPrototype extends Activity {
     	
 		wakeLock.release();
 		capturing = false;
+    }
 
+    
+    
+    
+    
+    public void startSubscribe() {
+    	if ( NetworkUtils.isOnline(this)){
+    		Toast.makeText(getBaseContext(), "connect to internet first!", Toast.LENGTH_SHORT).show();
+    	}
+    	try {
+    		receiving = true;
+    		wakeLock.acquire();
+    		
+    		String url = rtmpServerUrlText.getText().toString();
+    		
+    		//start the publisher
+    		FFMPEGOutputPipe pipe = FFMPEGWrapper.getInstance().getAudioOutputPipe(url);
+    		subscriber = new FFMPEGRtmpSubscriber(LOCAL_SOCKET_ADDRESS_MIC, pipe);
+    		subscriber.start();
+    		//and wait until it is up
+    		while ( !subscriber.up()) {
+    			try {
+    				Log.i("[FFMPEGPrototype", "waiting for capture server to be up");
+    				Thread.sleep(200);
+    			}
+    			catch( Exception e ){
+    				e.printStackTrace();
+    			}
+    		}
+    		
+    		//connect to the local socket
+    		localSocket = new LocalSocket();
+    		localSocket.connect(new LocalSocketAddress(LOCAL_SOCKET_ADDRESS_MIC));
+    		Log.i("[FFMPEGPrototype", "connected to socket");
+    		localSocket.setReceiveBufferSize(64);
+    		localSocket.setSendBufferSize(64);
+    		
+    		//prepare the mediarecorder
+    		player = new MediaPlayer();
+    		player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+    		player.setDataSource(localSocket.getFileDescriptor());
+    		player.prepare();
+    		
+    		try {
+				Log.i("[FFMPEGPrototype", "waiting for capture server to be up");
+				Thread.sleep(1000);
+			}
+			catch( Exception e ){
+				e.printStackTrace();
+			}
+    		
+    		player.start();
+    		
+    	}
+    	catch( Exception e ) {
+    		e.printStackTrace();
+    	}
     }
     
     
+    
+    public void stopSubscribe() {
+    	try {
+    		if ( subscriber != null ) {
+        		Log.i("[FFMPEGPrototype", "shutting down subscriber");
+        		subscriber.shutdown();
+    			localSocket.close();
+    		}
+    		player.stop();
+    		player.release();
+    	}
+    	catch( Exception e ) {
+    		e.printStackTrace();
+    	}
+    	
+		wakeLock.release();
+		receiving = false;
+    }
     
     
     
