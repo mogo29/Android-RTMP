@@ -154,17 +154,33 @@ public class FFMPEGWrapper {
 		 return pipe;
 	 }
 	 
-	 
-	 //local ffmpeg cmd : ffmpeg -analyzeduration 0 -y -i rtmp://192.168.1.2:1935/camundo-test-server/kaka -vn -acodec libopencore_amrnb -ab 12.2k -ar 8000 -f 3gp test.3gp
+
 	 public FFMPEGOutputPipe getAudioOutputPipe( String publisherString ) {
 		 String command = data_location + ffmpeg + " -analyzeduration 0 -i " + publisherString + 
-		 				" -vn -acodec " + AudioCodec.AMRNB.name + 
-		 				" -ab " + AudioCodec.AMRNB.BITRATE_12_2k + 
-		 				" -ar " + AudioCodec.AMRNB.RATE_8000 + 
-		 				" -f amr pipe:2";
+		 " -re -vn -acodec " + AudioCodec.PCM_U8.name + 
+		 " -f wav pipe:1";
 		 FFMPEGOutputPipe pipe = new FFMPEGOutputPipe(command);
 		 return pipe;
 	 }
+	 
+	 
+	 public FFMPEGOutputPipe getAudioOutputPipe( String publisherString, int audioFileFormat, String codecName  ) {
+		 String command = data_location + ffmpeg + " -analyzeduration 0 -ps 1024 -muxdelay 0 -muxpreload 0 -vn -i " + publisherString + " -re -vn -acodec ";
+		 if ( audioFileFormat == AudioCodec.AUDIO_FILE_FORMAT_WAV) {
+			 if ( codecName.equals(AudioCodec.PCM_U8.name)) {
+				 command += AudioCodec.PCM_U8.name; 
+			 }
+			 else if ( codecName.equals(AudioCodec.PCM_S16LE.name)) {
+				 command += AudioCodec.PCM_S16LE.name + " -ar " + AudioCodec.PCM_S16LE.RATE_11025; 
+			 }
+			 command += " -f wav pipe:1";
+		 }
+		 FFMPEGOutputPipe pipe = new FFMPEGOutputPipe(command);
+		 return pipe;
+	 }
+	 
+	 
+	 
 	 
 	 
 

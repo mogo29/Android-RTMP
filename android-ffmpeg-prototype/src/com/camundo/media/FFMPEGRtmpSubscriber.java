@@ -19,10 +19,12 @@
 package com.camundo.media;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
-import android.net.LocalServerSocket;
-import android.net.LocalSocket;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.util.Log;
 
 
@@ -31,93 +33,71 @@ public class FFMPEGRtmpSubscriber extends Thread{
 
 	private static final String NAME = "FFMPEGRtmpSubscriber";
 	
-	private String socketAddress;
 	private FFMPEGOutputPipe pipe;
+	private AudioTrack audioTrack;
 	
-	
-	private LocalSocket receiver;
-	private boolean up = false;
-	
+	private static int BUFFER_LENGTH = 1024 * 4;//for WAV audio this is ok?
 	
     
-    public FFMPEGRtmpSubscriber( String socketAddress, FFMPEGOutputPipe pipe ) {
-    	this.socketAddress = socketAddress;
+    public FFMPEGRtmpSubscriber( FFMPEGOutputPipe pipe ) {
     	this.pipe = pipe;
-    	
     }
     
-    private static final int BUFFER_LENGTH = 1024*2;//for AMR audio this is ok?
     
     
     @Override
     public void run() {
         try {
-            LocalServerSocket server = new LocalServerSocket(socketAddress);
+        	
+        	
+            
+        	pipe.setPriority(MAX_PRIORITY);
             pipe.start();
             
             while( !pipe.processRunning() ) {
             	Log.i( NAME, "[ run() ] pipe not yet running, waiting.");
             	try {
-            		Thread.sleep(250);
+            		Thread.sleep(1000);
             	}
             	catch( Exception e) {
             		e.printStackTrace();
             	}
             }
+            
+            int minBufferSize = AudioTrack.getMinBufferSize(AudioCodec.PCM_S16LE.RATE_11025, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT) *2 ;
+            audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, AudioCodec.PCM_S16LE.RATE_11025, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize * 4, AudioTrack.MODE_STREAM);
+            
+            BUFFER_LENGTH = minBufferSize;
+            ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
+		    buffer.order(ByteOrder.LITTLE_ENDIAN);
+		    
+            //byte[] buffer = new byte[BUFFER_LENGTH];
+            Log.d( NAME, "buffer length [" + BUFFER_LENGTH + "]");
+        	int len;
+            
             //wait until minimum amount of data
-            pipe.bootstrap();
+            pipe.bootstrap( 100 );
             
             
-            // its up
-            up = true;
-            while (up) {
-                
-                receiver = server.accept();
-                
-                receiver.setReceiveBufferSize(BUFFER_LENGTH);
-                receiver.setSendBufferSize(BUFFER_LENGTH);
-                
-                
-                if (receiver != null) {
-                	OutputStream output = receiver.getOutputStream();
-                    Log.i( NAME, "[ run() ] output [" + output + "]");
-                    
-                    int read = -1;
-                    byte[] buffer = new byte[BUFFER_LENGTH];
-                    int len;
-                    
-                    //while ( (read = pipe.read()) != -1) {
-                    	
-                    	//output.write(read);
-                    	while( (len = pipe.read(buffer)) > 0 ) {
-                    		Log.d("CameraCaptureServer", "[ run() ] len [" + len + "] buffer empty [" + pipe.available() + "] receiver [" + receiver + "]" );
-                   			output.write(buffer, 0, len);
-                   			output.flush();
-                    	//}
-                    }
+            int overallBytes = 0;
+            boolean started = false;
+            
+            //Log.d( NAME, "info rate[" + info.rate + "] channels [" + info.channels + "] dataSize [" + info.dataSize + "]");
+            //BUFFER_LENGTH = info.dataSize;
+            
+           	while( (len = pipe.read(buffer.array(), buffer.arrayOffset(), buffer.capacity())) > 0 ) {
+           		//Log.d(NAME, "[ run() ] len [" + len + "] buffer empty [" + pipe.available() + "]" );
+           		overallBytes+= audioTrack.write(buffer.array(), 0, len);
+           		//audioTrack.flush();
+           		if (!started && overallBytes > minBufferSize ){
+           			audioTrack.setPlaybackHeadPosition(2);
+           			audioTrack.play();
+                    started = true;
                 }
-                else {
-                	Log.i( NAME , "[ run() ] receiver is null!!!");
-                }
-            }
-            if ( pipe != null ) {
-            	Log.i( NAME , "[ run() ] closing pipe");
-            	pipe.close();
-            }
-            else {
-            	Log.i( NAME , "[ run() ] closing pipe not necessary, is already null");
-            }
+           		//audioTrack.flush();
+           	}
+           	
             
-            if ( receiver != null ) {
-            	Log.i( NAME, "[ run() ] closing receiver");
-            	receiver.close();
-            }
-            else {
-            	Log.i( NAME , "[ run() ] closing receiver not necessary, is already null");
-            }
-            
-            Log.i( NAME, "[ run() ] closing server");
-            server.close();
         } 
         catch (IOException e) {
         	e.printStackTrace();
@@ -129,13 +109,12 @@ public class FFMPEGRtmpSubscriber extends Thread{
     
     public void shutdown(){
     	Log.i( NAME , "[ shutdown() ] up is false");
-    	up = false;
+    	pipe.close();
+    	audioTrack.flush();
+        audioTrack.stop();
+        audioTrack.release();
+        
     }
 
     
-    public boolean up() {
-    	return up;
-    }
-    
-
 }

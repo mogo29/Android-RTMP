@@ -11,6 +11,27 @@
     	android:id="@+id/rtmpServerUrl">
     </EditText>
     
+   <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="horizontal">
+   	
+   		<EditText android:layout_height="wrap_content" android:text="kaka" 
+    		android:layout_width="0dip" 
+    		android:layout_weight="2"
+    		android:id="@+id/publishingTopic">
+    	</EditText>
+    	<Button android:text="&lt; &gt;" 
+					android:id="@+id/switchTopicButton" 
+					android:layout_width="45px"
+					android:layout_height="wrap_content"
+					>
+				</Button>
+    	<EditText android:layout_height="wrap_content" android:text="pipi"
+    		android:layout_width="0dip" 
+    		android:layout_weight="2"
+    		android:id="@+id/subscribingTopic">
+    	</EditText>
+   	
+   </LinearLayout>
+    
     
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="horizontal" >
     

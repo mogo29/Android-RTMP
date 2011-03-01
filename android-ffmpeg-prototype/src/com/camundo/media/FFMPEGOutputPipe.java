@@ -39,6 +39,8 @@ public class FFMPEGOutputPipe extends Thread {
 	private InputstreamReaderThread errorStreamReaderThread;
 	private InputstreamReaderThread inputStreamReaderThread;
 	
+	private boolean firstRead = false;
+	
 	
 	private InputStream inputStream;
 	
@@ -53,18 +55,20 @@ public class FFMPEGOutputPipe extends Thread {
 	}
 	
 	
-	public void bootstrap() throws IOException {
+	public void bootstrap( int size ) throws IOException {
 		Log.i(NAME , "[ bootstrap() ] avl [" + available() + "]");
-		while ( available() < 500 ) {
+		while ( available() < size ) {
 			Log.i(NAME , "[ bootstrap() ] avl [" + available() + "]");
 			try {
-				Thread.sleep(200);
+				Thread.sleep(1000);
 			}
 			catch( Exception e ) {
 				e.printStackTrace();
 			}
 		}
-		Log.i(NAME , "[ bootstrap() ] avl [" + available() + "]");
+		int av = inputStream.available();
+		inputStream.read(new byte[av] , 0,  av);
+		Log.i(NAME , "[ bootstrap() ] avl after bootstrap read [" + available() + "]");
 	}
 	
 	
@@ -80,7 +84,15 @@ public class FFMPEGOutputPipe extends Thread {
 	
 	
 	public int available() throws IOException {
-		return inputStream.available();
+		if ( inputStream != null ) {
+			return inputStream.available();
+		}
+		return 0;
+		
+	}
+	
+	public InputStream getInputStream() {
+		return inputStream;
 	}
 	
 	
@@ -88,14 +100,20 @@ public class FFMPEGOutputPipe extends Thread {
 	public void close() {
 		Log.i(NAME , "[ close() ] closing outputstream");
 		try {
-			inputStream.close();
+			if ( inputStream != null ) {
+				inputStream.close();
+			}
 		}
 		catch( Exception e ){
 			e.printStackTrace();
 		}
-		errorStreamReaderThread.finish();
-		process.destroy();
-		process = null;
+		if ( errorStreamReaderThread != null ) {
+			errorStreamReaderThread.finish();
+		}
+		if ( process != null ) {
+			process.destroy();
+			process = null;
+		}
 	}
 	
 	
@@ -105,16 +123,16 @@ public class FFMPEGOutputPipe extends Thread {
             	Log.d( NAME, "[ run() ] command [" + command + "]");
             process = Runtime.getRuntime().exec(  command , null);
             
-            inputStream = process.getErrorStream();
+            inputStream = process.getInputStream();
             //inputStreamReaderThread = new InputstreamReaderThread(process.getInputStream());
             //inputStream = inputStreamReaderThread.inputStream;
             
             Log.d( NAME , "[ run() ] inputStream created");
-            errorStreamReaderThread = new InputstreamReaderThread(process.getInputStream());
+            //errorStreamReaderThread = new InputstreamReaderThread(process.getErrorStream());
             Log.d( NAME, "[ run() ] errorStreamReader created");
              
-           // inputStreamReaderThread.start();
-            errorStreamReaderThread.start();
+            //inputStreamReaderThread.start();
+            //errorStreamReaderThread.start();
 
             if ( inputStream != null) {
             	processRunning = true;
