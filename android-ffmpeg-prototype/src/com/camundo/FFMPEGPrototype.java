@@ -110,7 +110,7 @@ public class FFMPEGPrototype extends Activity {
         setContentView(R.layout.main);
         
         rtmpServerUrlText = (EditText)findViewById(R.id.rtmpServerUrl);
-        rtmpServerUrlText.setText("rtmp://192.168.1.2:1935/camundo-test-server");
+        rtmpServerUrlText.setText("rtmp://camundo.com:1935/test");
         
         publishingTopicText = (EditText)findViewById(R.id.publishingTopic);
         publishingTopicText.setText("kaka");
@@ -197,13 +197,13 @@ public class FFMPEGPrototype extends Activity {
     		
     		//start the publisher
     		FFMPEGInputPipe pipe = FFMPEGWrapper.getInstance().getAudioInputPipe( url );
-    		publisher = new FFMPEGRtmpPublisher(LOCAL_SOCKET_ADDRESS_MIC, pipe);
+    		publisher = new FFMPEGRtmpPublisher( LOCAL_SOCKET_ADDRESS_MIC, pipe);
     		publisher.start();
     		//and wait until it is up
     		while ( !publisher.up()) {
     			try {
     				Log.i("[FFMPEGPrototype", "waiting for capture server to be up");
-    				Thread.sleep(200);
+    				Thread.sleep(500);
     			}
     			catch( Exception e ){
     				e.printStackTrace();
@@ -242,7 +242,11 @@ public class FFMPEGPrototype extends Activity {
     	catch( Exception e ) {
     		e.printStackTrace();
     		capturing = false;
+    		if ( e.getMessage().equalsIgnoreCase("broken pipe")) {
+    			Toast.makeText(getBaseContext(), "can not connect", Toast.LENGTH_SHORT).show();
+    		}
     	}
+    	
     }
     
     
@@ -315,8 +319,6 @@ public class FFMPEGPrototype extends Activity {
 		startSubscribeButton.setEnabled(true);
 		stopSubscribeButton.setEnabled(false);
     }
-    
-    
     
     
     

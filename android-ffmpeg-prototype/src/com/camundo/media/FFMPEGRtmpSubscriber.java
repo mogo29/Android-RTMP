@@ -21,6 +21,7 @@ package com.camundo.media;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -46,7 +47,7 @@ public class FFMPEGRtmpSubscriber extends Thread{
     public void run() {
         try {
         	//hmmm can always try
-        	pipe.setPriority(MAX_PRIORITY);
+        	//pipe.setPriority(MAX_PRIORITY);
             pipe.start();
             
             while( !pipe.processRunning() ) {
@@ -59,9 +60,9 @@ public class FFMPEGRtmpSubscriber extends Thread{
             	}
             }
             
-            int minBufferSize = AudioTrack.getMinBufferSize(AudioCodec.PCM_S16LE.RATE_11025, 
-            													AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-            													AudioFormat.ENCODING_PCM_16BIT) * 2;
+            int minBufferSize =  AudioTrack.getMinBufferSize(AudioCodec.PCM_S16LE.RATE_11025, 
+           													AudioFormat.CHANNEL_CONFIGURATION_MONO, 
+           													AudioFormat.ENCODING_PCM_16BIT);
             
             audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 
 						            		AudioCodec.PCM_S16LE.RATE_11025, 
@@ -69,6 +70,7 @@ public class FFMPEGRtmpSubscriber extends Thread{
 						            		AudioFormat.ENCODING_PCM_16BIT, 
 						            		minBufferSize * 4, 
 						            		AudioTrack.MODE_STREAM);
+           
             
             ByteBuffer buffer = ByteBuffer.allocate(minBufferSize);
 		    buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -82,12 +84,12 @@ public class FFMPEGRtmpSubscriber extends Thread{
             int overallBytes = 0;
             boolean started = false;
             
-           	while( (len = pipe.read(buffer.array(), buffer.arrayOffset(), buffer.capacity())) > 0 ) {
+           	while( (len = pipe.read(buffer.array())) > 0 ) {
            		//Log.d(NAME, "[ run() ] len [" + len + "] buffer empty [" + pipe.available() + "]" );
            		overallBytes+= audioTrack.write(buffer.array(), 0, len);
            		//audioTrack.flush();
            		if (!started && overallBytes > minBufferSize ){
-           			audioTrack.setPlaybackHeadPosition(2);
+           			//audioTrack.setPlaybackHeadPosition(2);
            			audioTrack.play();
                     started = true;
                 }

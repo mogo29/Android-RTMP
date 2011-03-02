@@ -20,6 +20,8 @@ package com.camundo.media;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
@@ -35,6 +37,7 @@ public class FFMPEGRtmpPublisher extends Thread{
 	private FFMPEGInputPipe pipe;
 	
 	
+	
 	private LocalSocket receiver;
 	private boolean up = false;
 	
@@ -43,14 +46,13 @@ public class FFMPEGRtmpPublisher extends Thread{
     public FFMPEGRtmpPublisher( String socketAddress, FFMPEGInputPipe pipe ) {
     	this.socketAddress = socketAddress;
     	this.pipe = pipe;
-    	
     }
     
     private static final int BUFFER_LENGTH = 64;//for AMR audio this is ok?
     
     
     @Override
-    public void run() {
+    public void run(){
         try {
             LocalServerSocket server = new LocalServerSocket(socketAddress);
             pipe.start();
@@ -83,7 +85,10 @@ public class FFMPEGRtmpPublisher extends Thread{
                     
                     int read = -1;
                     int available;
-                    byte[] buffer = new byte[BUFFER_LENGTH];
+                    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
+        		    buffer.order(ByteOrder.LITTLE_ENDIAN);
+        		    
+                    //byte[] buffer = new byte[BUFFER_LENGTH];
                     
                     while ( (read = input.read()) != -1) {
                     	//Log.d("CameraCaptureServer", "[ run() ] read [" + read + "] buffer empty [" + input.available() + "] receiver [" + receiver + "]" );
@@ -92,8 +97,8 @@ public class FFMPEGRtmpPublisher extends Thread{
                     		if ( available > BUFFER_LENGTH ) {
                     			available = BUFFER_LENGTH;
                     		}
-                   			input.read(buffer, 0, available);
-                   			pipe.write(buffer, 0, available);
+                   			input.read(buffer.array(), buffer.arrayOffset(), available);
+                   			pipe.write(buffer.array(), 0, available);
                     	}
                     }
                 }
@@ -122,10 +127,10 @@ public class FFMPEGRtmpPublisher extends Thread{
         } 
         catch (IOException e) {
         	e.printStackTrace();
-            Log.e(getClass().getName(), e.getMessage());
         }
         Log.i( TAG , "[ run() ] done");
     }
+    
     
     
     public void shutdown(){
