@@ -6,7 +6,9 @@ Little prototype for streaming audio.
 
 <p>
 Target is the android platform ( APK 8 ).<br/>
-For the moment it streams audio from the microphone to a RTMP server and can receive it back.
+For the moment it streams audio from the microphone to a RTMP server and can receive it back.<br/>
+<a href="http://www.youtube.com/watch?v=pqUUL0QwuMo">http://www.youtube.com/watch?v=pqUUL0QwuMo
+</a>
 </p>
 
 
@@ -37,5 +39,4 @@ aac			flv			pcm_s16le
 adpcm_swf					h263			pcm_u8
 </pre>
 
-http://www.youtube.com/watch?v=pqUUL0QwuMo
 
