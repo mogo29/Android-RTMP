@@ -32,12 +32,14 @@ import com.camundo.Camundo;
 
 public class FFMPEGWrapper {
 	
+	private final static String TAG = "FFMPEGWrapper";
+	
 	private static FFMPEGWrapper _instance = null;
 	
 	public final String ffmpeg = "ffmpeg";
 	public final String data_location = "/data/data/com.camundo/";
 	
-	private static final String[] ffmpeg_parts = { "xaa", "xab", "xac", "xad" };
+	private static final String[] ffmpeg_parts = { "xaa", "xab", "xac" };
 	
 	
 	private FFMPEGWrapper() {}
@@ -75,8 +77,8 @@ public class FFMPEGWrapper {
 	
 	/**
 	 * Write ffmpeg to data directory and make it executable
-	 * write in parts because assets can not be bogger then 1MB
-	 * TODO make it fetch the parts over http, this way consuming less space on the device
+	 * write in parts because assets can not be bigger then 1MB
+	 * TODO make it fetch the parts over http, this way consuming less space on the device but...
 	 * @param overwrite
 	 * @param target
 	 * @throws Exception
@@ -96,8 +98,8 @@ public class FFMPEGWrapper {
 			 inputStream.close();
 		 }
 		 out.close();
-		 Log.d("FFMPEGWrapper", executeCommand("/system/bin/chmod 744 " + target.getAbsolutePath()));
-		 Log.d("FFMPEGWrapper", "File [" + target.getAbsolutePath() + "] is created.");
+		 Log.d( TAG , executeCommand("/system/bin/chmod 744 " + target.getAbsolutePath()));
+		 Log.d( TAG, "File [" + target.getAbsolutePath() + "] is created.");
 	 }
 	
 	

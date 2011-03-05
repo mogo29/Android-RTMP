@@ -23,86 +23,96 @@ import com.camundo.util.FFMPEGBootstrap;
 import com.camundo.util.FFMPEGWrapper;
 
 public class PipeFactory {
-	
-	private FFMPEGWrapper ffWrapper; 
+
+	private FFMPEGWrapper ffWrapper;
 	private String ffmpegCommand;
-	
+
 	public PipeFactory() {
 		ffWrapper = FFMPEGWrapper.getInstance();
 		ffmpegCommand = ffWrapper.data_location + ffWrapper.ffmpeg;
 	}
-	
-	
-	public AudioInputPipe getADPCMAudioInputPipe( String publisherString ) {
-		 String command = ffmpegCommand + " -analyzeduration 0 -i pipe:0 -re -vn -acodec " + AudioCodec.ADPCM_SWF.name + " -ar " + AudioCodec.ADPCM_SWF.RATE_11025 + " -ac 1 -f flv " + publisherString ;
-		 return newAudioInputPipe(command);
-	 }
-	 
-	 public AudioInputPipe getNellymoserAudioInputPipe( String publisherString ) {
-		 String command = ffmpegCommand + " -analyzeduration 0 -muxdelay 0 -muxpreload 0 -i pipe:0 -re -vn -acodec " + AudioCodec.Nellymoser.name + " -ar 8000 -ac 1 -ab 16k -f flv " + publisherString ;
-		 return newAudioInputPipe(command);
-	 }
-	 
-	 public AudioInputPipe getAACAudioInputPipe( String publisherString ) throws Exception {
-		 // in case of aac, string should start with mp4: to be recognized by red5
-		 //if ( publisherString.indexOf("mp4:") == -1) {
-		 // 		throw new Exception("Publisher string should contain 'mp4:' for aac");
-		 //}
-		 String command = ffmpegCommand + " -strict experimental -analyzeduration 0 -muxdelay 0 -muxpreload 0 -i pipe:0 -re -vn -acodec " + AudioCodec.AAC.name + " -ac 1 -ar 8000 -ab 16k -f flv " + publisherString ;
-		 return newAudioInputPipe(command);
-	 }
-	 
-	 
-	 private FFMPEGAudioInputPipe newAudioInputPipe( String command ) {
-		 FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
-		 pipe.setBootstrap(FFMPEGBootstrap.AMR_BOOTSTRAP);
-		 return pipe;
-	 }
-	 
-	 
-	 public AudioInputPipe getVideoInputPipe( String publisherString ) {
-		 String command = ffmpegCommand + " -analyzeduration 0 -i pipe:0 -re -an -r 25 -f flv -b 100k -s 320x240 " + publisherString ;
-		 FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
-		 return pipe;
-	 }
-	 
 
-	 public AudioOutputPipe getAudioOutputPipe( String publisherString ) {
-		 String command = ffmpegCommand + " -analyzeduration 0 -i " + publisherString + 
-		 " -re -vn -acodec " + AudioCodec.PCM_U8.name + 
-		 " -f wav pipe:1";
-		 FFMPEGAudioOutputPipe pipe = new FFMPEGAudioOutputPipe(command);
-		 return pipe;
-	 }
-	 
-	 
-	 public AudioOutputPipe getAudioOutputPipe( String publisherString, int audioFileFormat, String codecName, String sourceCodec ) {
-		 String command;
-		 //add -strict experimental and acodec for AAC 
-		 if ( sourceCodec.equals(AudioCodec.AAC.name)) {
-			 command = ffmpegCommand + " -strict experimental -acodec aac -analyzeduration 0 -ps 128 -muxdelay 0 -muxpreload 0 -vn -itsoffset -2 -i " + publisherString + " -re -vn -acodec ";
-		 }
-		 else if ( sourceCodec.equals(AudioCodec.Nellymoser.name )) {
-			 command = ffmpegCommand + "  -acodec nellymoser -analyzeduration 0 -ps 128 -muxdelay 0 -muxpreload 0 -vn -itsoffset -2 -i " + publisherString + " -re -vn -acodec ";
-		 }
-		 else if ( sourceCodec.equals(AudioCodec.ADPCM_SWF.name )) {
-			 command = ffmpegCommand + "  -acodec adpcm_swf -analyzeduration 0 -ps 128 -muxdelay 0 -muxpreload 0 -vn -itsoffset -2 -i " + publisherString + " -re -vn -acodec ";
-		 }
-		 else {
-			 throw new UnsupportedOperationException("no support dor source codec [" + sourceCodec + "]");
-		 }
-		 if ( audioFileFormat == AudioCodec.AUDIO_FILE_FORMAT_WAV) {
-			 if ( codecName.equals(AudioCodec.PCM_U8.name)) {
-				 command += AudioCodec.PCM_U8.name; 
-			 }
-			 else if ( codecName.equals(AudioCodec.PCM_S16LE.name)) {
-				 command += AudioCodec.PCM_S16LE.name + " -ar " + AudioCodec.PCM_S16LE.RATE_11025 +  " -ac 1" ;//+ " -ab 64k";
-			 }
-			 command += " -f wav pipe:1";
-		 }
-		 FFMPEGAudioOutputPipe pipe = new FFMPEGAudioOutputPipe(command);
-		 return pipe;
-	 }
 	
+	public AudioInputPipe getADPCMAudioInputPipe(String publisherString) {
+		String command = ffmpegCommand
+				+ " -analyzeduration 0 -i pipe:0 -re -vn -acodec "
+				+ AudioCodec.ADPCM_SWF.name + " -ar "
+				+ AudioCodec.ADPCM_SWF.RATE_11025 + " -ac 1 -f flv "
+				+ publisherString;
+		return newAudioInputPipe(command);
+	}
+
+	
+	public AudioInputPipe getNellymoserAudioInputPipe(String publisherString) {
+		String command = ffmpegCommand
+				+ " -analyzeduration 0 -muxdelay 0 -muxpreload 0 -i pipe:0 -re -vn -acodec "
+				+ AudioCodec.Nellymoser.name
+				+ " -ar 8000 -ac 1 -ab 16k -f flv " + publisherString;
+		return newAudioInputPipe(command);
+	}
+
+	
+	public AudioInputPipe getAACAudioInputPipe(String publisherString)
+			throws Exception {
+		// in case of aac, string should start with mp4: to be recognized by
+		// red5
+		// if ( publisherString.indexOf("mp4:") == -1) {
+		// throw new
+		// Exception("Publisher string should contain 'mp4:' for aac");
+		// }
+		String command = ffmpegCommand
+				+ " -strict experimental -analyzeduration 0 -muxdelay 0 -muxpreload 0 -i pipe:0 -re -vn -acodec "
+				+ AudioCodec.AAC.name + " -ac 1 -ar 8000 -ab 16k -f flv "
+				+ publisherString;
+		return newAudioInputPipe(command);
+	}
+
+	
+	public AudioOutputPipe getAudioOutputPipe(String publisherString,
+			int audioFileFormat, String codecName, String sourceCodec) {
+		String command;
+		// add -strict experimental and acodec for AAC
+		if (sourceCodec.equals(AudioCodec.AAC.name)) {
+			command = ffmpegCommand
+					+ " -strict experimental -acodec aac -analyzeduration 0 -muxdelay 0 -muxpreload 0 -vn -itsoffset -2 -i "
+					+ publisherString + " -re -vn -acodec ";
+		} else if (sourceCodec.equals(AudioCodec.Nellymoser.name)) {
+			command = ffmpegCommand
+					+ " -analyzeduration 0 -vn -itsoffset -5 -acodec nellymoser -ar 8000 -ac 1 -i "
+					+ publisherString + " -re -vn -acodec ";
+		} else if (sourceCodec.equals(AudioCodec.ADPCM_SWF.name)) {
+			command = ffmpegCommand
+					+ "  -acodec adpcm_swf -analyzeduration 0 -muxdelay 0 -muxpreload 0 -vn -itsoffset -2 -i "
+					+ publisherString + " -re -vn -acodec ";
+		} else {
+			throw new UnsupportedOperationException(
+					"no support dor source codec [" + sourceCodec + "]");
+		}
+		if (audioFileFormat == AudioCodec.AUDIO_FILE_FORMAT_WAV) {
+			if (codecName.equals(AudioCodec.PCM_S16LE.name)) {
+				command += AudioCodec.PCM_S16LE.name + " -ar "
+						+ AudioCodec.PCM_S16LE.RATE_11025 + " -ac 1";
+			}
+			command += " -f wav pipe:1";
+		}
+		FFMPEGAudioOutputPipe pipe = new FFMPEGAudioOutputPipe(command);
+		return pipe;
+	}
+
+	
+	private FFMPEGAudioInputPipe newAudioInputPipe(String command) {
+		FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
+		pipe.setBootstrap(FFMPEGBootstrap.AMR_BOOTSTRAP);
+		return pipe;
+	}
+
+	
+	public AudioInputPipe getVideoInputPipe(String publisherString) {
+		String command = ffmpegCommand
+				+ " -analyzeduration 0 -i pipe:0 -re -an -r 25 -f flv -b 100k -s 320x240 "
+				+ publisherString;
+		FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
+		return pipe;
+	}
 
 }

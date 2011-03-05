@@ -144,11 +144,6 @@ public class AudioCodec {
 	}
 	
 	
-	public static class PCM_U8 {
-		public static final String name = "pcm_u8";
-		public static final int RATE_11025 = 11025;
-	}
-
 	public static class PCM_S16LE {
 		public static final String name = "pcm_s16le";
 		public static final int RATE_8000 = 8000;

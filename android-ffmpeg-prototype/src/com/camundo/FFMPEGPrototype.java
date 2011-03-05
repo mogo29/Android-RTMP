@@ -115,8 +115,8 @@ public class FFMPEGPrototype extends Activity {
         pipeFactory = new PipeFactory();
         
         rtmpServerUrlText = (EditText)findViewById(R.id.rtmpServerUrl);
-        //rtmpServerUrlText.setText("rtmp://camundo.com:1935/test");
-        rtmpServerUrlText.setText("rtmp://192.168.1.2:1935/test");
+        rtmpServerUrlText.setText("rtmp://camundo.com:1935/test");
+        //rtmpServerUrlText.setText("rtmp://192.168.1.2:1935/test");
         
         
         publishingTopicText = (EditText)findViewById(R.id.publishingTopic);
