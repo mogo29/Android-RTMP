@@ -20,8 +20,6 @@ package com.camundo.media;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
@@ -50,7 +48,7 @@ public class AudioPublisher extends Thread{
     	this.pipe = pipe;
     }
     
-    private static final int BUFFER_LENGTH = 64;//for AMR audio this is ok?
+    private static final int BUFFER_LENGTH = 64 * 6;//for AMR audio this is ok?
     
     
     @Override
@@ -62,7 +60,7 @@ public class AudioPublisher extends Thread{
             while( !pipe.initialized() ) {
             	Log.i(TAG, "[ run() ] pipe not yet running, waiting.");
             	try {
-            		Thread.sleep(250);
+            		Thread.sleep(100);
             	}
             	catch( Exception e) {
             		e.printStackTrace();

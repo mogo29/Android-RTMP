@@ -29,18 +29,15 @@ import java.io.OutputStream;
 import android.util.Log;
 
 import com.camundo.Camundo;
-import com.camundo.media.pipe.FFMPEGAudioInputPipe;
-import com.camundo.media.pipe.FFMPEGAudioOutputPipe;
 
 public class FFMPEGWrapper {
 	
 	private static FFMPEGWrapper _instance = null;
 	
-	private static final String ffmpeg = "ffmpeg";
+	public final String ffmpeg = "ffmpeg";
+	public final String data_location = "/data/data/com.camundo/";
 	
 	private static final String[] ffmpeg_parts = { "xaa", "xab", "xac", "xad" };
-	
-	private static final String data_location = "/data/data/com.camundo/";
 	
 	
 	private FFMPEGWrapper() {}
@@ -142,51 +139,7 @@ public class FFMPEGWrapper {
 	 
 	 
 	 
-	 public FFMPEGAudioInputPipe getADPCMAudioInputPipe( String publisherString ) {
-		 String command = data_location + ffmpeg + " -analyzeduration 0 -i pipe:0 -re -vn -acodec " + AudioCodec.ADPCM_SWF.name + " -ar " + AudioCodec.ADPCM_SWF.RATE_11025 + " -ac 1 -f flv " + publisherString ;
-		 FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
-		 pipe.setBootstrap(FFMPEGBootstrap.AMR_BOOTSTRAP);
-		 return pipe;
-	 }
 	 
-	 public FFMPEGAudioInputPipe getNellymoserAudioInputPipe( String publisherString ) {
-		 String command = data_location + ffmpeg + " -analyzeduration 0 -muxdelay 0 -muxpreload 0 -i pipe:0 -re -vn -acodec " + AudioCodec.Nellymoser.name + " -ar 8000 -ac 1 -f flv " + publisherString ;
-		 FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
-		 pipe.setBootstrap(FFMPEGBootstrap.AMR_BOOTSTRAP);
-		 return pipe;
-	 }
-	 
-	 
-	 public FFMPEGAudioInputPipe getVideoInputPipe( String publisherString ) {
-		 String command = data_location + ffmpeg + " -analyzeduration 0 -i pipe:0 -re -an -r 25 -f flv -b 100k -s 320x240 " + publisherString ;
-		 FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
-		 return pipe;
-	 }
-	 
-
-	 public FFMPEGAudioOutputPipe getAudioOutputPipe( String publisherString ) {
-		 String command = data_location + ffmpeg + " -analyzeduration 0 -i " + publisherString + 
-		 " -re -vn -acodec " + AudioCodec.PCM_U8.name + 
-		 " -f wav pipe:1";
-		 FFMPEGAudioOutputPipe pipe = new FFMPEGAudioOutputPipe(command);
-		 return pipe;
-	 }
-	 
-	 
-	 public FFMPEGAudioOutputPipe getAudioOutputPipe( String publisherString, int audioFileFormat, String codecName  ) {
-		 String command = data_location + ffmpeg + " -analyzeduration 0 -ps 1024 -muxdelay 0 -muxpreload 0 -vn -i " + publisherString + " -re -vn -acodec ";
-		 if ( audioFileFormat == AudioCodec.AUDIO_FILE_FORMAT_WAV) {
-			 if ( codecName.equals(AudioCodec.PCM_U8.name)) {
-				 command += AudioCodec.PCM_U8.name; 
-			 }
-			 else if ( codecName.equals(AudioCodec.PCM_S16LE.name)) {
-				 command += AudioCodec.PCM_S16LE.name + " -ar " + AudioCodec.PCM_S16LE.RATE_11025; 
-			 }
-			 command += " -f wav pipe:1";
-		 }
-		 FFMPEGAudioOutputPipe pipe = new FFMPEGAudioOutputPipe(command);
-		 return pipe;
-	 }
 	 
 	 
 	 

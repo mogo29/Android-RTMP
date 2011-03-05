@@ -106,9 +106,11 @@ public class AudioSubscriber extends Thread{
     public void shutdown(){
     	Log.i( TAG , "[ shutdown() ] up is false");
     	pipe.close();
-    	audioTrack.flush();
-        audioTrack.stop();
-        audioTrack.release();
+    	if ( audioTrack != null ) {
+    		audioTrack.flush();
+    		audioTrack.stop();
+    		audioTrack.release();
+    	}
         
     }
 

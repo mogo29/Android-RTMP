@@ -68,6 +68,12 @@ public class AudioCodec {
 		
 	}
 	
+	public static class AAC {
+		
+		public static final String name = "aac";
+		
+	}
+	
 	
 	public static class AMRNB {
 		
@@ -145,7 +151,10 @@ public class AudioCodec {
 
 	public static class PCM_S16LE {
 		public static final String name = "pcm_s16le";
+		public static final int RATE_8000 = 8000;
 		public static final int RATE_11025 = 11025;
+		public static final int RATE_44100 = 44100;
+		
 	}
 	
 }

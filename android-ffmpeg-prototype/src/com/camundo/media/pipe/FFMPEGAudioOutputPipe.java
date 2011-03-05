@@ -30,14 +30,17 @@ import android.util.Log;
 
 public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 	
-	private static final String TAG = "FFMPEGOutputPipe";
+	private static final String TAG = "FFMPEGAudioOutputPipe";
 	
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	
 	
 	private Process process;
 	private String command;
+	
 	private boolean processRunning;
+	protected boolean processStartFailed;
+	
 	
 	private InputstreamReaderThread errorStreamReaderThread;
 	//private InputstreamReaderThread inputStreamReaderThread;
@@ -61,7 +64,11 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 		while ( available() < 100 ) {
 			Log.i(TAG , "[ bootstrap() ] avl [" + available() + "]");
 			try {
-				Thread.sleep(1000);
+				if ( processStartFailed ) {
+					close();
+					throw new IOException("processStartFailed");
+				}
+				Thread.sleep(300);
 			}
 			catch( Exception e ) {
 				e.printStackTrace();
@@ -143,6 +150,9 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
             if ( inputStream != null) {
             	processRunning = true;
             }
+            else {
+            	processStartFailed = true;
+            }
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -150,7 +160,11 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
    }
 	
 	
-	public boolean initialized() {
+	@Override
+	public boolean initialized() throws IOException {
+		if ( processStartFailed ) {
+			throw new IOException("startup of the process Failed");
+		}
 		return processRunning;
 	}
 	
@@ -171,6 +185,10 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
                  BufferedReader br = new BufferedReader(isr, 32);
                  String line;
                  while ((line = br.readLine()) != null) {
+                	 if ( line.indexOf("I/O error") != -1 ) {
+                		 Log.e( TAG , "IOERRRRRORRRRR -> putting to processStartFailed");
+                		 processStartFailed = true;
+                	 }
                 	 Log.d( TAG , line + LINE_SEPARATOR);
                  }
             }
