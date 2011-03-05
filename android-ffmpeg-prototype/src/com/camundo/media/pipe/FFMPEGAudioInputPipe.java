@@ -35,7 +35,7 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
 	private String command;
 	private boolean processRunning;
 	
-//	private InputstreamReaderThread errorStreamReaderThread;
+	private InputstreamReaderThread errorStreamReaderThread;
 //	private InputstreamReaderThread inputStreamReaderThread;
 	
 	private OutputStream outputStream;
@@ -85,7 +85,7 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
 			e.printStackTrace();
 		}
 		//inputStreamReaderThread.finish();
-		//errorStreamReaderThread.finish();
+		errorStreamReaderThread.finish();
 		if ( process != null ) {
 			process.destroy();
 			process = null;
@@ -102,11 +102,11 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
             
 //            inputStreamReaderThread = new InputstreamReaderThread(process.getInputStream());
 //            Log.d("FFMPEGInputPipe", "[ run() ] inputStreamReader created");
-//            errorStreamReaderThread = new InputstreamReaderThread(process.getErrorStream());
+            errorStreamReaderThread = new InputstreamReaderThread(process.getErrorStream());
 //            Log.d("FFMPEGInputPipe", "[ run() ] errorStreamReader created");
 //             
 //            inputStreamReaderThread.start();
-//            errorStreamReaderThread.start();
+            errorStreamReaderThread.start();
              
             outputStream = process.getOutputStream();
             Log.d("FFMPEGInputPipe", "[ run() ] os : " + outputStream);

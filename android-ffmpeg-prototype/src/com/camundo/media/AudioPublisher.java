@@ -78,8 +78,8 @@ public class AudioPublisher extends Thread{
                 
                 receiver = server.accept();
                 
-                receiver.setReceiveBufferSize(BUFFER_LENGTH);
-                receiver.setSendBufferSize(BUFFER_LENGTH);
+                //receiver.setReceiveBufferSize(BUFFER_LENGTH);
+                //receiver.setSendBufferSize(BUFFER_LENGTH);
                 
                 if (receiver != null) {
                     InputStream input = receiver.getInputStream();
@@ -87,10 +87,10 @@ public class AudioPublisher extends Thread{
                     
                     int read = -1;
                     int available;
-                    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
-        		    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    //ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
+        		    //buffer.order(ByteOrder.LITTLE_ENDIAN);
         		    
-                    //byte[] buffer = new byte[BUFFER_LENGTH];
+                    byte[] buffer = new byte[BUFFER_LENGTH];
                     
                     while ( (read = input.read()) != -1) {
                     	//Log.d("CameraCaptureServer", "[ run() ] read [" + read + "] buffer empty [" + input.available() + "] receiver [" + receiver + "]" );
@@ -99,10 +99,17 @@ public class AudioPublisher extends Thread{
                     		if ( available > BUFFER_LENGTH ) {
                     			available = BUFFER_LENGTH;
                     		}
-                   			input.read(buffer.array(), buffer.arrayOffset(), available);
-                   			pipe.write(buffer.array(), 0, available);
+                   			input.read(buffer, 0, available);
+                   			pipe.write(buffer, 0, available);
                     	}
                     }
+                    
+//                    while ( (read = input.read(buffer)) > 0) {
+//                    	//Log.d("CameraCaptureServer", "[ run() ] read [" + read + "] buffer empty [" + input.available() + "] receiver [" + receiver + "]" );
+//           				pipe.write(buffer, 0, read);
+//                    }
+                    
+                    
                 }
                 else {
                 	Log.i( TAG, "[ run() ] receiver is null!!!");

@@ -150,7 +150,7 @@ public class FFMPEGWrapper {
 	 }
 	 
 	 public FFMPEGAudioInputPipe getNellymoserAudioInputPipe( String publisherString ) {
-		 String command = data_location + ffmpeg + " -analyzeduration 0 -i pipe:0 -re -vn -acodec " + AudioCodec.Nellymoser.name + " -ar 8000 -ac 1 -f flv " + publisherString ;
+		 String command = data_location + ffmpeg + " -analyzeduration 0 -muxdelay 0 -muxpreload 0 -i pipe:0 -re -vn -acodec " + AudioCodec.Nellymoser.name + " -ar 8000 -ac 1 -f flv " + publisherString ;
 		 FFMPEGAudioInputPipe pipe = new FFMPEGAudioInputPipe(command);
 		 pipe.setBootstrap(FFMPEGBootstrap.AMR_BOOTSTRAP);
 		 return pipe;

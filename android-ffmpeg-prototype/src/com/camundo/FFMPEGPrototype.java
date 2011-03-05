@@ -216,8 +216,8 @@ public class FFMPEGPrototype extends Activity {
     		localSocket = new LocalSocket();
     		localSocket.connect(new LocalSocketAddress(LOCAL_SOCKET_ADDRESS_MIC));
     		Log.i("[FFMPEGPrototype", "connected to socket");
-    		localSocket.setReceiveBufferSize(64);
-    		localSocket.setSendBufferSize(64);
+    		//localSocket.setReceiveBufferSize(64);
+    		//localSocket.setSendBufferSize(64);
     		
     		//prepare the mediarecorder
     		recorder = new MediaRecorder();

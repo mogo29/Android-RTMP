@@ -1,0 +1,100 @@
+03-05 10:02:10.990: INFO/System.out(19726): [ streamToRtmp() ] [/data/data/com.camundo/ffmpeg -analyzeduration 0 -i pipe:0 -re -vn -acodec adpcm_swf -ar 11025 -ac 1 -f flv rtmp://camundo.com:1935/test/kaka]
+03-05 10:02:11.070: DEBUG/FFMPEGInputPipe(19726): [ run() ] os : java.lang.ProcessManager$ProcessOutputStream@44956640
+03-05 10:02:11.150: DEBUG/FFMPEGInputPipe(19726): FFmpeg version git-c3897d7, Copyright (c) 2000-2011 the FFmpeg developers
+03-05 10:02:11.160: DEBUG/FFMPEGInputPipe(19726):   built on Mar  5 2011 01:03:24 with gcc 4.4.0
+03-05 10:02:11.400: DEBUG/FFMPEGInputPipe(19726):   configuration: --target-os=linux --cross-prefix=arm-eabi- --arch=arm --disable-armvfp --prefix=../build/ffmpeg --disable-shared --disable-encoders --disable-decoders --disable-protocols --enable-muxers --enable-demuxers --enable-parsers --disable-devices --enable-filters --disable-bsfs --enable-encoder=adpcm_swf --enable-decoder=adpcm_swf --enable-decoder=nellymoser --enable-encoder=nellymoser --enable-encoder=flv --enable-protocol=pipe --enable-protocol=file --enable-protocol=rtmp --enable-decoder=amrnb --enable-decoder=flv --enable-encoder=pcm_u8 --enable-encoder=pcm_s16le --enable-encoder=aac --disable-frei0r --disable-demuxer=ea --disable-muxer=mov --disable-demuxer=mov --disable-demuxer=matroska --disable-muxer=matroska --disable-muxer=matroska_audio --disable-demuxer=mpc --disable-demuxer=mpc8 --disable-ffprobe --extra-cflags='-I/home/wouter/applications/android-ndk/platforms/android-8/arch-arm/usr/include -fpic -mthumb-interwork -ffunction-sections -funwind-tables -fstack-protector -fno-short-enums -march=armv5te -mtune=xscale -msoft-float' --extra-ldflags='-nostdlib /home/wouter/applications/android-ndk/platforms/android-8/arch-arm/usr/lib/libc.so /home/wouter/applications/android-ndk/platforms/android-8/arch-arm/usr/lib/libm.so -Wl,-rpath-link=/home/wouter/applications/android-ndk/platforms/android-8/arch-arm/usr/lib -L/home/wouter/applications/android-ndk/toolchains/arm-eabi-4.4.0/prebuilt/linux-x86/lib/gcc/arm-eabi/4.4.0' --extra-ldflags='-Wl,-dynamic-linker,/system/bin/linker /home/wouter/applications/android-ndk/platforms/android-8/arch-arm/usr/lib/crtbegin_dynamic.o /home/wouter/applications/android-ndk/platforms/android-8/arch-arm/usr/lib/crtend_android.o' --extra-libs=-lgcc
+03-05 10:02:11.400: DEBUG/FFMPEGInputPipe(19726):   libavutil     50.36. 0 / 50.36. 0
+03-05 10:02:11.410: DEBUG/FFMPEGInputPipe(19726):   libavcore      0.16. 1 /  0.16. 1
+03-05 10:02:11.420: DEBUG/FFMPEGInputPipe(19726):   libavcodec    52.108. 0 / 52.108. 0
+03-05 10:02:11.430: DEBUG/FFMPEGInputPipe(19726):   libavformat   52.94. 0 / 52.94. 0
+03-05 10:02:11.440: DEBUG/FFMPEGInputPipe(19726):   libavdevice   52. 2. 3 / 52. 2. 3
+03-05 10:02:11.450: DEBUG/FFMPEGInputPipe(19726):   libavfilter    1.74. 0 /  1.74. 0
+03-05 10:02:11.450: DEBUG/FFMPEGInputPipe(19726):   libswscale     0.12. 0 /  0.12. 0
+03-05 10:02:11.470: INFO/AudioPublisher(19726): [ run() ] input [android.net.LocalSocketImpl$SocketInputStream@44960178]
+03-05 10:02:11.470: DEBUG/FFMPEGInputPipe(19726): [amr @ 0x43cd90] max_analyze_duration reached
+03-05 10:02:11.480: INFO/[FFMPEGPrototype(19726): connected to socket
+03-05 10:02:11.490: DEBUG/FFMPEGInputPipe(19726): [amr @ 0x43cd90] Estimating duration from bitrate, this may be inaccurate
+03-05 10:02:11.500: VERBOSE/MediaProfiles(73): getInstance
+03-05 10:02:11.510: ERROR/audio_input(73): unsupported parameter: x-pvmf/media-input-node/cap-config-interface;valtype=key_specific_value
+03-05 10:02:11.510: ERROR/audio_input(73): VerifyAndSetParameter failed
+03-05 10:02:11.510: DEBUG/FFMPEGInputPipe(19726): Input #0, amr, from 'pipe:0':
+03-05 10:02:11.540: DEBUG/FFMPEGInputPipe(19726):   Duration: N/A, bitrate: N/A
+03-05 10:02:11.550: DEBUG/FFMPEGInputPipe(19726):     Stream #0.0: Audio: amrnb, 8000 Hz, 1 channels, flt
+03-05 10:02:11.570: ERROR/PVOMXEncNode(73): PVMFOMXEncNode-Audio_AMRNB::DoPrepare(): Got Component OMX.PV.amrencnb handle 
+03-05 10:02:11.590: INFO/[FFMPEGPrototype(19726): waiting for capture server to be up
+03-05 10:02:11.710: DEBUG/dalvikvm(255): GC_EXPLICIT freed 523 objects / 23624 bytes in 321ms
+03-05 10:02:11.870: DEBUG/FFMPEGInputPipe(19726): Output #0, flv, to 'rtmp://camundo.com:1935/test/kaka':
+03-05 10:02:11.870: DEBUG/FFMPEGInputPipe(19726):   Metadata:
+03-05 10:02:11.880: DEBUG/FFMPEGInputPipe(19726):     encoder         : Lavf52.94.0
+03-05 10:02:11.900: DEBUG/FFMPEGInputPipe(19726):     Stream #0.0: Audio: adpcm_swf, 11025 Hz, 1 channels, s16, 64 kb/s
+03-05 10:02:11.910: DEBUG/FFMPEGInputPipe(19726): Stream mapping:
+03-05 10:02:11.920: DEBUG/FFMPEGInputPipe(19726):   Stream #0.0 -> #0.0
+03-05 10:02:11.930: DEBUG/FFMPEGInputPipe(19726): Warning, using s16 intermediate sample format for resampling
+03-05 10:02:12.350: INFO/BatteryStatsImpl(103): notePhoneSignalStrengthLocked: 2->3
+03-05 10:02:12.600: DEBUG/AudioHardwareMSM72XX(73): audpre_index = 0, tx_iir_index = 0
+03-05 10:02:12.600: DEBUG/HTC Acoustic(73): msm72xx_enable_audpre: 0x0003
+03-05 10:02:12.611: INFO/AudioHardwareMSM72XX(73): AudioHardware pcm recording is going to standby.
+03-05 10:02:12.611: INFO/AudioHardwareMSM72XX(73): Routing audio to Speakerphone
+03-05 10:02:12.611: INFO/AudioHardwareMSM72XX(73): doAudioRouteOrMute() device 1, mMode 0, mMicMute 1
+03-05 10:02:12.620: DEBUG/HTC Acoustic(73): msm72xx_enable_audpp: 0x0007
+03-05 10:02:12.620: INFO/AudioHardwareMSM72XX(73): Routing audio to Speakerphone
+03-05 10:02:12.620: INFO/AudioHardwareMSM72XX(73): doAudioRouteOrMute() device 1, mMode 0, mMicMute 1
+03-05 10:02:12.620: DEBUG/HTC Acoustic(73): msm72xx_enable_audpp: 0x0007
+03-05 10:02:12.630: ERROR/HTC Acoustic(73): Cannot enable/disable VR mode, enable=0
+03-05 10:02:12.630: INFO/AudioHardwareMSM72XX(73): Routing audio to Speakerphone
+03-05 10:02:12.640: DEBUG/AudioHardwareMSM72XX(73): audpre_index = 0, tx_iir_index = 0
+03-05 10:02:12.640: DEBUG/HTC Acoustic(73): msm72xx_enable_audpre: 0x0003
+03-05 10:02:12.640: INFO/AudioHardwareMSM72XX(73): do input routing device 40000
+03-05 10:02:12.640: INFO/AudioHardwareMSM72XX(73): Routing audio to Speakerphone
+03-05 10:02:12.640: INFO/AudioHardwareMSM72XX(73): doAudioRouteOrMute() device 1, mMode 0, mMicMute 1
+03-05 10:02:12.640: DEBUG/HTC Acoustic(73): msm72xx_enable_audpp: 0x0007
+03-05 10:02:12.740: INFO/AudioHardwareMSM72XX(73): AUDIO_START: start kernel pcm_in driver.
+03-05 10:02:13.854: DEBUG/FFMPEGInputPipe(19726): size=       7kB time=1.21 bitrate=  48.8kbits/s    
+03-05 10:02:14.354: DEBUG/FFMPEGInputPipe(19726): size=      12kB time=2.00 bitrate=  48.2kbits/s    
+03-05 10:02:14.850: DEBUG/FFMPEGInputPipe(19726): size=      15kB time=2.51 bitrate=  48.1kbits/s    
+03-05 10:02:15.380: DEBUG/FFMPEGInputPipe(19726): size=      18kB time=3.02 bitrate=  47.9kbits/s    
+03-05 10:02:15.880: DEBUG/FFMPEGInputPipe(19726): size=      21kB time=3.53 bitrate=  47.9kbits/s    
+03-05 10:02:16.390: DEBUG/FFMPEGInputPipe(19726): size=      23kB time=3.99 bitrate=  47.8kbits/s    
+03-05 10:02:16.920: DEBUG/FFMPEGInputPipe(19726): size=      27kB time=4.55 bitrate=  47.8kbits/s    
+03-05 10:02:17.430: DEBUG/FFMPEGInputPipe(19726): size=      29kB time=5.06 bitrate=  47.7kbits/s    
+03-05 10:02:17.600: DEBUG/dalvikvm(19272): GC_EXPLICIT freed 169 objects / 11280 bytes in 213ms
+03-05 10:02:17.930: DEBUG/FFMPEGInputPipe(19726): size=      32kB time=5.57 bitrate=  47.7kbits/s    
+03-05 10:02:18.460: DEBUG/FFMPEGInputPipe(19726): size=      35kB time=6.08 bitrate=  47.7kbits/s    
+03-05 10:02:18.960: DEBUG/FFMPEGInputPipe(19726): size=      38kB time=6.59 bitrate=  47.6kbits/s    
+03-05 10:02:19.460: DEBUG/FFMPEGInputPipe(19726): size=      41kB time=7.11 bitrate=  47.6kbits/s    
+03-05 10:02:19.980: DEBUG/FFMPEGInputPipe(19726): size=      44kB time=7.62 bitrate=  47.6kbits/s    
+03-05 10:02:20.480: DEBUG/FFMPEGInputPipe(19726): size=      47kB time=8.13 bitrate=  47.6kbits/s    
+03-05 10:02:20.980: DEBUG/FFMPEGInputPipe(19726): size=      50kB time=8.64 bitrate=  47.6kbits/s    
+03-05 10:02:21.490: DEBUG/FFMPEGInputPipe(19726): size=      53kB time=9.10 bitrate=  47.6kbits/s    
+03-05 10:02:22.000: DEBUG/FFMPEGInputPipe(19726): size=      56kB time=9.61 bitrate=  47.6kbits/s    
+03-05 10:02:22.500: DEBUG/FFMPEGInputPipe(19726): size=      59kB time=10.12 bitrate=  47.5kbits/s    
+03-05 10:02:23.020: DEBUG/FFMPEGInputPipe(19726): size=      62kB time=10.63 bitrate=  47.5kbits/s    
+03-05 10:02:23.530: DEBUG/FFMPEGInputPipe(19726): size=      65kB time=11.15 bitrate=  47.5kbits/s    
+03-05 10:02:24.050: DEBUG/FFMPEGInputPipe(19726): size=      68kB time=11.66 bitrate=  47.5kbits/s    
+03-05 10:02:24.550: DEBUG/FFMPEGInputPipe(19726): size=      71kB time=12.17 bitrate=  47.5kbits/s    
+03-05 10:02:25.060: DEBUG/FFMPEGInputPipe(19726): size=      74kB time=12.68 bitrate=  47.5kbits/s    
+03-05 10:02:25.580: DEBUG/FFMPEGInputPipe(19726): size=      76kB time=13.19 bitrate=  47.5kbits/s    
+03-05 10:02:26.090: DEBUG/FFMPEGInputPipe(19726): size=      79kB time=13.70 bitrate=  47.5kbits/s    
+03-05 10:02:26.510: DEBUG/dalvikvm(19280): GC_EXPLICIT freed 3558 objects / 184568 bytes in 174ms
+03-05 10:02:26.610: DEBUG/FFMPEGInputPipe(19726): size=      82kB time=14.21 bitrate=  47.5kbits/s    
+03-05 10:02:27.120: DEBUG/FFMPEGInputPipe(19726): size=      85kB time=14.72 bitrate=  47.5kbits/s    
+03-05 10:02:27.630: DEBUG/FFMPEGInputPipe(19726): size=      89kB time=15.28 bitrate=  47.5kbits/s    
+03-05 10:02:28.130: DEBUG/FFMPEGInputPipe(19726): size=      91kB time=15.74 bitrate=  47.5kbits/s    
+03-05 10:02:28.650: DEBUG/FFMPEGInputPipe(19726): size=      94kB time=16.25 bitrate=  47.5kbits/s    
+03-05 10:02:29.170: DEBUG/FFMPEGInputPipe(19726): size=      97kB time=16.77 bitrate=  47.5kbits/s    
+03-05 10:02:29.690: DEBUG/FFMPEGInputPipe(19726): size=     100kB time=17.28 bitrate=  47.5kbits/s    
+03-05 10:02:30.200: DEBUG/FFMPEGInputPipe(19726): size=     103kB time=17.79 bitrate=  47.5kbits/s    
+03-05 10:02:30.700: DEBUG/FFMPEGInputPipe(19726): size=     106kB time=18.34 bitrate=  47.5kbits/s    
+03-05 10:02:31.210: DEBUG/FFMPEGInputPipe(19726): size=     109kB time=18.86 bitrate=  47.5kbits/s    
+03-05 10:02:31.730: DEBUG/FFMPEGInputPipe(19726): size=     112kB time=19.32 bitrate=  47.5kbits/s    
+03-05 10:02:32.230: DEBUG/FFMPEGInputPipe(19726): size=     115kB time=19.88 bitrate=  47.5kbits/s    
+03-05 10:02:32.740: DEBUG/FFMPEGInputPipe(19726): size=     118kB time=20.34 bitrate=  47.5kbits/s    
+03-05 10:02:33.270: DEBUG/FFMPEGInputPipe(19726): size=     121kB time=20.90 bitrate=  47.5kbits/s    
+03-05 10:02:33.780: DEBUG/FFMPEGInputPipe(19726): size=     124kB time=21.41 bitrate=  47.5kbits/s    
+03-05 10:02:34.290: DEBUG/FFMPEGInputPipe(19726): size=     127kB time=21.87 bitrate=  47.5kbits/s    
+03-05 10:02:34.790: DEBUG/FFMPEGInputPipe(19726): size=     130kB time=22.43 bitrate=  47.5kbits/s    
+03-05 10:02:35.300: DEBUG/FFMPEGInputPipe(19726): size=     133kB time=22.89 bitrate=  47.4kbits/s    
+03-05 10:02:35.810: DEBUG/FFMPEGInputPipe(19726): size=     136kB time=23.41 bitrate=  47.4kbits/s    
+03-05 10:02:36.330: INFO/BatteryStatsImpl(103): notePhoneSignalStrengthLocked: 3->2
+03-05 10:02:36.350: DEBUG/FFMPEGInputPipe(19726): size=     139kB time=23.92 bitrate=  47.4kbits/s    
+03-05 10:02:36.860: DEBUG/FFMPEGInputPipe(19726): size=     141kB time=24.43 bitrate=  47.4kbits/s    
