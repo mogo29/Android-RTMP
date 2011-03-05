@@ -16,7 +16,7 @@ For the moment it streams audio from the microphone to a RTMP server and can rec
 <br/>
 <h2>To do</h2>
 <ul>
-   <li>Latency is approximately 3 seconds depending the network.</li>
+   <li>Latency is approximately 2-3 seconds depending the network.</li>
    <li>Add video</li>
    <li>Tune FFMPEG build</li>
    <li>Streaming from files can be added</li>
@@ -31,12 +31,14 @@ FFMPEG is wrapped and accessed via java using pipes :)
 
 <pre>
 Enabled decoders:
-adpcm_swf		flv			h263
-amrnb
+aac			amrnb			h263
+adpcm_swf					flv			nellymoser
 
 Enabled encoders:
-aac			flv			pcm_s16le
-adpcm_swf					h263			pcm_u8
+aac			h263			pcm_s16le
+adpcm_swf					nellymoser		pcm_u8
+flv
+
 </pre>
 
 
