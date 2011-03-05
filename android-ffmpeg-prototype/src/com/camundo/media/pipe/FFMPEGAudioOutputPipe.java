@@ -16,16 +16,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Camundo.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.camundo.media;
+package com.camundo.media.pipe;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.camundo.util.AudioCodec;
+
+import android.media.AudioFormat;
 import android.util.Log;
 
-public class FFMPEGOutputPipe extends Thread {
+public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 	
 	private static final String TAG = "FFMPEGOutputPipe";
 	
@@ -36,14 +39,14 @@ public class FFMPEGOutputPipe extends Thread {
 	private String command;
 	private boolean processRunning;
 	
-	//private InputstreamReaderThread errorStreamReaderThread;
+	private InputstreamReaderThread errorStreamReaderThread;
 	//private InputstreamReaderThread inputStreamReaderThread;
 	
 		
 	private InputStream inputStream;
 	
 	
-	public FFMPEGOutputPipe( String command ) {
+	public FFMPEGAudioOutputPipe( String command ) {
 		this.command = command;
 	}
 	
@@ -53,9 +56,9 @@ public class FFMPEGOutputPipe extends Thread {
 	}
 	
 	
-	public void bootstrap( int size ) throws IOException {
+	public void bootstrap() throws IOException {
 		Log.i(TAG , "[ bootstrap() ] avl [" + available() + "]");
-		while ( available() < size ) {
+		while ( available() < 100 ) {
 			Log.i(TAG , "[ bootstrap() ] avl [" + available() + "]");
 			try {
 				Thread.sleep(1000);
@@ -64,9 +67,14 @@ public class FFMPEGOutputPipe extends Thread {
 				e.printStackTrace();
 			}
 		}
+		flush();
+		Log.i(TAG , "[ bootstrap() ] avl after bootstrap read [" + available() + "]");
+	}
+	
+	
+	private void flush() throws IOException{
 		int av = inputStream.available();
 		inputStream.read(new byte[av] , 0,  av);
-		Log.i(TAG , "[ bootstrap() ] avl after bootstrap read [" + available() + "]");
 	}
 	
 	
@@ -126,11 +134,11 @@ public class FFMPEGOutputPipe extends Thread {
             //inputStream = inputStreamReaderThread.inputStream;
             
             //Log.d( NAME , "[ run() ] inputStream created");
-            //errorStreamReaderThread = new InputstreamReaderThread(process.getErrorStream());
-            //Log.d( NAME, "[ run() ] errorStreamReader created");
+            errorStreamReaderThread = new InputstreamReaderThread(process.getErrorStream());
+            Log.d( TAG, "[ run() ] errorStreamReader created");
              
             //inputStreamReaderThread.start();
-            //errorStreamReaderThread.start();
+            errorStreamReaderThread.start();
 
             if ( inputStream != null) {
             	processRunning = true;
@@ -142,7 +150,7 @@ public class FFMPEGOutputPipe extends Thread {
    }
 	
 	
-	public boolean processRunning() {
+	public boolean initialized() {
 		return processRunning;
 	}
 	
@@ -182,6 +190,24 @@ public class FFMPEGOutputPipe extends Thread {
 			}
 		}
 		
+	}
+
+
+	@Override
+	public int getSampleRate() {
+		return AudioCodec.PCM_S16LE.RATE_11025;
+	}
+
+
+	@Override
+	public int getChannelConfig() {
+		return AudioFormat.CHANNEL_CONFIGURATION_MONO;
+	}
+
+
+	@Override
+	public int getEncoding() {
+		return AudioFormat.ENCODING_PCM_16BIT;
 	}
 
 

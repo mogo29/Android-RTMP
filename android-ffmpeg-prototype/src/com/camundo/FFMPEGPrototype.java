@@ -39,18 +39,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.camundo.media.AudioCodec;
-import com.camundo.media.FFMPEGInputPipe;
-import com.camundo.media.FFMPEGOutputPipe;
-import com.camundo.media.FFMPEGRtmpPublisher;
-import com.camundo.media.FFMPEGRtmpSubscriber;
-import com.camundo.media.FFMPEGWrapper;
+import com.camundo.media.AudioPublisher;
+import com.camundo.media.AudioSubscriber;
+import com.camundo.media.pipe.FFMPEGAudioOutputPipe;
+import com.camundo.media.pipe.FFMPEGAudioInputPipe;
+import com.camundo.util.AudioCodec;
+import com.camundo.util.FFMPEGWrapper;
 import com.camundo.util.NetworkUtils;
 
 public class FFMPEGPrototype extends Activity {
 	
-	private FFMPEGRtmpPublisher publisher;
-	private FFMPEGRtmpSubscriber subscriber;
+	private AudioPublisher audioPublisher;
+	private AudioSubscriber audioSubscriber;
 	
 	private MediaRecorder recorder;
 	
@@ -111,6 +111,7 @@ public class FFMPEGPrototype extends Activity {
         
         rtmpServerUrlText = (EditText)findViewById(R.id.rtmpServerUrl);
         rtmpServerUrlText.setText("rtmp://camundo.com:1935/test");
+        
         
         publishingTopicText = (EditText)findViewById(R.id.publishingTopic);
         publishingTopicText.setText("kaka");
@@ -196,11 +197,12 @@ public class FFMPEGPrototype extends Activity {
     		String url = rtmpServerUrlText.getText().toString().trim() + "/" + publishingTopicText.getText().toString().trim();
     		
     		//start the publisher
-    		FFMPEGInputPipe pipe = FFMPEGWrapper.getInstance().getAudioInputPipe( url );
-    		publisher = new FFMPEGRtmpPublisher( LOCAL_SOCKET_ADDRESS_MIC, pipe);
-    		publisher.start();
+    		//FFMPEGAudioInputPipe pipe = FFMPEGWrapper.getInstance().getADPCMAudioInputPipe( url );
+    		FFMPEGAudioInputPipe pipe = FFMPEGWrapper.getInstance().getNellymoserAudioInputPipe( url );
+    		audioPublisher = new AudioPublisher( LOCAL_SOCKET_ADDRESS_MIC, pipe);
+    		audioPublisher.start();
     		//and wait until it is up
-    		while ( !publisher.up()) {
+    		while ( !audioPublisher.up()) {
     			try {
     				Log.i("[FFMPEGPrototype", "waiting for capture server to be up");
     				Thread.sleep(500);
@@ -254,9 +256,9 @@ public class FFMPEGPrototype extends Activity {
     
     public void stopCapture() {
     	try {
-    		if ( publisher != null ) {
+    		if ( audioPublisher != null ) {
         		Log.i("[FFMPEGPrototype", "shutting down publisher");
-    			publisher.shutdown();
+    			audioPublisher.shutdown();
     			localSocket.close();
     		}
     		recorder.stop();
@@ -288,9 +290,10 @@ public class FFMPEGPrototype extends Activity {
     		String url = rtmpServerUrlText.getText().toString().trim() + "/" + subscribingTopicText.getText().toString().trim();;
     		
     		//start the publisher
-    		FFMPEGOutputPipe pipe = FFMPEGWrapper.getInstance().getAudioOutputPipe(url, AudioCodec.AUDIO_FILE_FORMAT_WAV, AudioCodec.PCM_S16LE.name);
-    		subscriber = new FFMPEGRtmpSubscriber(pipe);
-    		subscriber.start();
+    		FFMPEGAudioOutputPipe pipe = FFMPEGWrapper.getInstance().getAudioOutputPipe(url, AudioCodec.AUDIO_FILE_FORMAT_WAV, AudioCodec.PCM_S16LE.name);
+    		//FileAudioOutputPipe pipe = new FileAudioOutputPipe(new File("/data/data/com.camundo/sample.wav"));
+    		audioSubscriber = new AudioSubscriber(pipe);
+    		audioSubscriber.start();
     		
     		startSubscribeButton.setEnabled(false);
     		stopSubscribeButton.setEnabled(true);
@@ -306,9 +309,9 @@ public class FFMPEGPrototype extends Activity {
     
     public void stopSubscribe() {
     	try {
-    		if ( subscriber != null ) {
+    		if ( audioSubscriber != null ) {
         		Log.i("[FFMPEGPrototype", "shutting down subscriber");
-        		subscriber.shutdown();
+        		audioSubscriber.shutdown();
     		}
     	}
     	catch( Exception e ) {

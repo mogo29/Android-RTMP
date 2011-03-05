@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Camundo.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.camundo.media;
+package com.camundo.media.pipe;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.io.OutputStream;
 
 import android.util.Log;
 
-public class FFMPEGInputPipe extends Thread {
+public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
 	
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	
@@ -43,7 +43,7 @@ public class FFMPEGInputPipe extends Thread {
 	private byte[] bootstrap;
 	
 	
-	public FFMPEGInputPipe( String command ) {
+	public FFMPEGAudioInputPipe( String command ) {
 		this.command = command;
 	}
 	
@@ -60,11 +60,11 @@ public class FFMPEGInputPipe extends Thread {
 	}
 	
 	
-	protected void setBootstrap( byte[] bootstrap ) {
+	public void setBootstrap( byte[] bootstrap ) {
 		this.bootstrap = bootstrap;
 	}
 	
-	protected void writeBootstrap() {
+	public void writeBootstrap() {
 		if ( bootstrap != null ){
 			try {
 				write( bootstrap, 0, bootstrap.length);
@@ -120,7 +120,7 @@ public class FFMPEGInputPipe extends Thread {
    }
 	
 	
-	public boolean processRunning() {
+	public boolean initialized() {
 		return processRunning;
 	}
 	

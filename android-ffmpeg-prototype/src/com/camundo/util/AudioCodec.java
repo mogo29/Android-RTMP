@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Camundo.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.camundo.media;
+package com.camundo.util;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
 
 import android.util.Log;
 
@@ -57,6 +58,13 @@ public class AudioCodec {
 		public static final int RATE_11025 = 11025;
 		public static final int RATE_22050 = 22050;
 		public static final int RATE_44100 = 44100;
+		
+	}
+	
+	
+	public static class Nellymoser {
+		
+		public static final String name = "nellymoser";
 		
 	}
 	
@@ -104,6 +112,7 @@ public class AudioCodec {
 		    checkFormat(bits == 16, "Unsupported bits: " + bits);
 		    int dataSize = 0;
 		    
+		    /*
 		    while (buffer.getInt() != 0x61746164) { // "data" marker
 		      Log.d( TAG , "Skipping non-data chunk");
 		      int size = buffer.getInt();
@@ -113,7 +122,7 @@ public class AudioCodec {
 		      buffer.rewind();
 		    }
 		    dataSize = buffer.getInt();
-		    checkFormat(dataSize > 0, "wrong datasize: " + dataSize);
+		    checkFormat(dataSize > 0, "wrong datasize: " + dataSize);*/
 		 
 		    return new WavInfo( rate, channels, dataSize);
 		}

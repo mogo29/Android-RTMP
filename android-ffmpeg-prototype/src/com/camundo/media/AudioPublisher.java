@@ -27,23 +27,25 @@ import android.net.LocalServerSocket;
 import android.net.LocalSocket;
 import android.util.Log;
 
+import com.camundo.media.pipe.AudioInputPipe;
 
 
-public class FFMPEGRtmpPublisher extends Thread{
+
+public class AudioPublisher extends Thread{
 
 	public final static String TAG = "FFMPEGRtmpPublisher";
 	
 	private String socketAddress;
-	private FFMPEGInputPipe pipe;
+	private AudioInputPipe pipe;
 	
 	
-	
+	 
 	private LocalSocket receiver;
 	private boolean up = false;
 	
 	
     
-    public FFMPEGRtmpPublisher( String socketAddress, FFMPEGInputPipe pipe ) {
+    public AudioPublisher( String socketAddress, AudioInputPipe pipe ) {
     	this.socketAddress = socketAddress;
     	this.pipe = pipe;
     }
@@ -57,7 +59,7 @@ public class FFMPEGRtmpPublisher extends Thread{
             LocalServerSocket server = new LocalServerSocket(socketAddress);
             pipe.start();
             
-            while( !pipe.processRunning() ) {
+            while( !pipe.initialized() ) {
             	Log.i(TAG, "[ run() ] pipe not yet running, waiting.");
             	try {
             		Thread.sleep(250);

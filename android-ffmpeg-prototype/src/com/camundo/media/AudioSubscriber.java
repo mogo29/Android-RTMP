@@ -21,24 +21,24 @@ package com.camundo.media;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 
-import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
+import com.camundo.media.pipe.AudioOutputPipe;
 
 
-public class FFMPEGRtmpSubscriber extends Thread{
 
-	private static final String TAG = "FFMPEGRtmpSubscriber";
+public class AudioSubscriber extends Thread{
+
+	private static final String TAG = "Subscriber";
 	
-	private FFMPEGOutputPipe pipe;
+	private AudioOutputPipe pipe;
 	private AudioTrack audioTrack;
 	 
 
-    public FFMPEGRtmpSubscriber( FFMPEGOutputPipe pipe ) {
+    public AudioSubscriber( AudioOutputPipe pipe ) {
     	this.pipe = pipe;
     }
     
@@ -50,7 +50,7 @@ public class FFMPEGRtmpSubscriber extends Thread{
         	//pipe.setPriority(MAX_PRIORITY);
             pipe.start();
             
-            while( !pipe.processRunning() ) {
+            while( !pipe.initialized() ) {
             	Log.i( TAG, "[ run() ] pipe not yet running, waiting.");
             	try {
             		Thread.sleep(1000);
@@ -60,14 +60,12 @@ public class FFMPEGRtmpSubscriber extends Thread{
             	}
             }
             
-            int minBufferSize =  AudioTrack.getMinBufferSize(AudioCodec.PCM_S16LE.RATE_11025, 
-           													AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-           													AudioFormat.ENCODING_PCM_16BIT);
+            int minBufferSize =  AudioTrack.getMinBufferSize( pipe.getSampleRate(), pipe.getChannelConfig(), pipe.getEncoding());
             
             audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 
-						            		AudioCodec.PCM_S16LE.RATE_11025, 
-						            		AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-						            		AudioFormat.ENCODING_PCM_16BIT, 
+						            		pipe.getSampleRate(), 
+						            		pipe.getChannelConfig(), 
+						            		pipe.getEncoding(), 
 						            		minBufferSize * 4, 
 						            		AudioTrack.MODE_STREAM);
            
@@ -79,7 +77,7 @@ public class FFMPEGRtmpSubscriber extends Thread{
         	int len;
             
             //wait until minimum amount of data ( header is 44 )
-            pipe.bootstrap( 100 );
+            pipe.bootstrap();
             
             int overallBytes = 0;
             boolean started = false;
@@ -91,6 +89,7 @@ public class FFMPEGRtmpSubscriber extends Thread{
            		if (!started && overallBytes > minBufferSize ){
            			//audioTrack.setPlaybackHeadPosition(2);
            			audioTrack.play();
+           			//pipe.flush();
                     started = true;
                 }
            	}
