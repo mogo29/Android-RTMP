@@ -32,7 +32,7 @@ import com.camundo.media.pipe.AudioOutputPipe;
 
 public class AudioSubscriber extends Thread{
 
-	private static final String TAG = "Subscriber";
+	private static final String TAG = "AudioSubscriber";
 	
 	private AudioOutputPipe pipe;
 	private AudioTrack audioTrack;

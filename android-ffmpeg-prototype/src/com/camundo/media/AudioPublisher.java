@@ -33,7 +33,7 @@ import com.camundo.media.pipe.AudioInputPipe;
 
 public class AudioPublisher extends Thread{
 
-	public final static String TAG = "FFMPEGRtmpPublisher";
+	public final static String TAG = "AudioPublisher";
 	
 	private String socketAddress;
 	private AudioInputPipe pipe;
