@@ -6,6 +6,7 @@ import android.media.MediaRecorder.AudioSource;
 import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.camundo.media.AudioPublisher;
@@ -33,8 +34,8 @@ public class AudioCall extends Thread {
 	
 	private PipeFactory pipeFactory = new PipeFactory();
 	
-	private AudioPublisher audioPublisher;
-	private AudioSubscriber audioSubscriber;
+	public AudioPublisher audioPublisher;
+	public AudioSubscriber audioSubscriber;
 	
 	
 	
@@ -184,6 +185,7 @@ public class AudioCall extends Thread {
     		if ( audioSubscriber != null ) {
         		Log.i(TAG , "shutting down subscriber");
         		audioSubscriber.shutdown();
+        		audioSubscriber = null;
     		}
     	}
     	catch( Exception e ) {

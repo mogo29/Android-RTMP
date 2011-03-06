@@ -36,6 +36,8 @@ public class AudioSubscriber extends Thread{
 	
 	private AudioOutputPipe pipe;
 	private AudioTrack audioTrack;
+	
+	public int overallBytesReceived = 0;
 	 
 
     public AudioSubscriber( AudioOutputPipe pipe ) {
@@ -79,13 +81,13 @@ public class AudioSubscriber extends Thread{
             //wait until minimum amount of data ( header is 44 )
             pipe.bootstrap();
             
-            int overallBytes = 0;
+            
             boolean started = false;
             
            	while( (len = pipe.read(buffer.array())) > 0 ) {
            		//Log.d(NAME, "[ run() ] len [" + len + "] buffer empty [" + pipe.available() + "]" );
-           		overallBytes+= audioTrack.write(buffer.array(), 0, len);
-           		if (!started && overallBytes > minBufferSize ){
+           		overallBytesReceived+= audioTrack.write(buffer.array(), 0, len);
+           		if (!started && overallBytesReceived > minBufferSize ){
            			audioTrack.play();
                     started = true;
                 }

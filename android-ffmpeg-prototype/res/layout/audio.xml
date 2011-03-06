@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/ScrollView01" android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+<LinearLayout 
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingTop="20px"
+    android:gravity="center_vertical"
     >
     
     <TextView android:text="Publish and receive audio" android:id="@+id/textView1" 
@@ -14,19 +16,17 @@
 	android:textColor="#ffffff"
 	android:radius="10px"
 	android:padding="5px"
-	android:paddingTop="20px"
-	android:paddingBottom="20px"
     android:layout_height="wrap_content">
     </TextView>
     
     <EditText android:layout_height="wrap_content" android:text="" 
     	android:layout_width="match_parent" 
+    	android:inputType="textUri"
     	android:id="@+id/rtmpServerUrl">
     </EditText>
     
    <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" 
    android:padding="5px"
-   android:paddingTop="20px"
    android:layout_width="match_parent" android:orientation="horizontal">
    	 
    		<LinearLayout android:layout_height="wrap_content" 
@@ -94,11 +94,10 @@
     	
    	
    </LinearLayout>
-    
 
 			<LinearLayout android:layout_height="wrap_content" 
 			android:id="@+id/linearLayout1" 
-			android:paddingTop="20px"
+			android:paddingTop="2px"
 			android:layout_width="match_parent" 
 			android:orientation="horizontal" >
 				<Button android:text="START" 
@@ -115,5 +114,26 @@
 			</LinearLayout>
    
 	
+	<LinearLayout android:layout_height="wrap_content" 
+			android:id="@+id/linearLayout1" 
+			android:paddingTop="2px"
+			android:layout_width="match_parent" 
+			android:orientation="horizontal" >
+				
+				
+		<TextView android:text="0kb" android:id="@+id/receivedStatusText" 
+    			android:layout_width="match_parent" 
+    			android:gravity="center_horizontal"
+    			android:textStyle="bold"
+				android:ellipsize="end"
+				android:textColor="#ffffff"
+				android:radius="10px"
+				android:padding="5px"
+    			android:layout_height="wrap_content">
+    		</TextView>
+				
+			</LinearLayout>
+	
 	
 </LinearLayout>
+</ScrollView>
