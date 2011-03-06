@@ -85,19 +85,15 @@ public class AudioSubscriber extends Thread{
            	while( (len = pipe.read(buffer.array())) > 0 ) {
            		//Log.d(NAME, "[ run() ] len [" + len + "] buffer empty [" + pipe.available() + "]" );
            		overallBytes+= audioTrack.write(buffer.array(), 0, len);
-           		//audioTrack.flush();
            		if (!started && overallBytes > minBufferSize ){
-           			//audioTrack.setPlaybackHeadPosition(2);
            			audioTrack.play();
-           			//pipe.flush();
                     started = true;
                 }
            	}
             
         } 
         catch (IOException e) {
-        	e.printStackTrace();
-            Log.e(getClass().getName(), e.getMessage());
+            Log.e( TAG, "[ run() ]", e);
         }
         Log.i( TAG, "[ run() ] done");
     }
@@ -105,9 +101,11 @@ public class AudioSubscriber extends Thread{
     
     public void shutdown(){
     	Log.i( TAG , "[ shutdown() ] up is false");
-    	pipe.close();
+    	if ( pipe != null ) {
+    		Log.i( TAG , "[ shutdown() ] closing pipe");
+    		pipe.close();
+    	}
     	if ( audioTrack != null ) {
-    		audioTrack.flush();
     		audioTrack.stop();
     		audioTrack.release();
     	}

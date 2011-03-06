@@ -42,6 +42,14 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 	protected boolean processStartFailed;
 	
 	
+	private int bootStrapCount = 0;
+	private final int minSleepBootstrap = 300;
+	private final int maxSleepBootstrap = 3000;
+	
+	private int currentBootstrapSleep = minSleepBootstrap;
+	
+	
+	
 	private InputstreamReaderThread errorStreamReaderThread;
 	//private InputstreamReaderThread inputStreamReaderThread;
 	
@@ -68,7 +76,11 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 					close();
 					throw new IOException("processStartFailed");
 				}
-				Thread.sleep(300);
+				if ( currentBootstrapSleep < maxSleepBootstrap  && bootStrapCount > 10 ) {
+					currentBootstrapSleep = currentBootstrapSleep + 100;
+				}
+				bootStrapCount++;
+				Thread.sleep(currentBootstrapSleep);
 			}
 			catch( Exception e ) {
 				e.printStackTrace();
@@ -111,22 +123,27 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 	
 	
 	public void close() {
+		
+		if ( process != null ) {
+			process.destroy();
+			process = null;
+		}
+		
 		Log.i(TAG , "[ close() ] closing outputstream");
 		try {
 			if ( inputStream != null ) {
-				inputStream.close();
+				synchronized( inputStream) {
+					inputStream.close();
+				}
 			}
 		}
 		catch( Exception e ){
 			e.printStackTrace();
 		}
-//		if ( errorStreamReaderThread != null ) {
-//			errorStreamReaderThread.finish();
-//		}
-		if ( process != null ) {
-			process.destroy();
-			process = null;
+		if ( errorStreamReaderThread != null ) {
+			errorStreamReaderThread.finish();
 		}
+		
 	}
 	
 	
@@ -184,7 +201,7 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
                  InputStreamReader isr = new InputStreamReader(inputStream);
                  BufferedReader br = new BufferedReader(isr, 32);
                  String line;
-                 while ((line = br.readLine()) != null) {
+                 while ( br != null && (line = br.readLine()) != null) {
                 	 if ( line.indexOf("I/O error") != -1 ) {
                 		 Log.e( TAG , "IOERRRRRORRRRR -> putting to processStartFailed");
                 		 processStartFailed = true;
@@ -193,7 +210,7 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
                  }
             }
             catch( Exception e ) {
-                 e.printStackTrace();
+            	Log.e( TAG, "problem closing reader?", e);
             }
        }
 		
@@ -203,7 +220,7 @@ public class FFMPEGAudioOutputPipe extends Thread implements AudioOutputPipe {
 					inputStream.close();
 				}
 				catch( Exception e) {
-					e.printStackTrace();
+					Log.e( TAG, "[ finish() ] problem closing inputstream", e);
 				}
 			}
 		}

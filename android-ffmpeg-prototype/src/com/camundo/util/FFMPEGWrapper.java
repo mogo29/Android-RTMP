@@ -70,7 +70,7 @@ public class FFMPEGWrapper {
 			dl.mkdirs();
 		}
 		File target = new File(data_location + ffmpeg);
-		writeFFMPEGToData( true, target);
+		writeFFMPEGToData( false, target);
 	}
 	
 	

@@ -4,89 +4,32 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+   
     
+    <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout1"
+     android:layout_width="match_parent" android:orientation="vertical"
+     android:gravity="center_vertical"
+     >
+     
+     	<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1"
+     	android:layout_width="match_parent" android:orientation="vertical"
+     	android:paddingTop="30px" android:paddingBottom="30px"
+     	android:gravity="center_horizontal" android:background="@layout/round_rect"
+        >
     
-    <EditText android:layout_height="wrap_content" android:text="" 
-    	android:layout_width="match_parent" 
-    	android:id="@+id/rtmpServerUrl">
-    </EditText>
-    
-   <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="horizontal">
-   	
-   		<EditText android:layout_height="wrap_content" android:text="kaka" 
-    		android:layout_width="0dip" 
-    		android:layout_weight="2"
-    		android:id="@+id/publishingTopic">
-    	</EditText>
-    	<Button android:text="&lt; &gt;" 
-					android:id="@+id/switchTopicButton" 
-					android:layout_width="45px"
-					android:layout_height="wrap_content"
-					>
-				</Button>
-    	<EditText android:layout_height="wrap_content" android:text="pipi"
-    		android:layout_width="0dip" 
-    		android:layout_weight="2"
-    		android:id="@+id/subscribingTopic">
-    	</EditText>
-   	
-   </LinearLayout>
-    
-    
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="horizontal" >
-    
-    
-    	<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="0dip" android:layout_weight="1" android:orientation="vertical">
-    		<TextView android:id="@+id/textView1" 
-		    	android:layout_width="match_parent" 
-		    	android:layout_height="40px"
-		    	android:gravity="center_vertical|center_horizontal"
-		    	android:textSize="16px"
-		    	android:text="Publish Microphone"></TextView>
-	
-			<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="horizontal" >
-				<Button android:text="START" 
-					android:id="@+id/startCaptureButton" 
-					android:layout_width="0dip"
+			<Button android:text="Audio" 
+					android:id="@+id/audioActivityButton" 
+					android:layout_width="100px"
 					android:layout_height="wrap_content"
 					android:layout_weight="1">
 				</Button>
-				<Button android:text="STOP" android:id="@+id/stopCaptureButton"
-					android:layout_width="0dip"
+				<Button android:text="Video" android:id="@+id/videoActivityButton"
+					android:layout_width="100px"
 					android:layout_height="wrap_content"
 					android:layout_weight="1">
 				</Button>
-			</LinearLayout>
-    	
-    	</LinearLayout>
-    	
-    	
-    	<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="0dip" android:layout_weight="1" android:orientation="vertical" >
-    	
-    		<TextView android:id="@+id/textView1" 
-		    	android:layout_width="match_parent" 
-		    	android:layout_height="40px"
-		    	android:gravity="center_vertical|center_horizontal"
-		    	android:textSize="16px"
-		    	android:text="Receive Audio"></TextView>
-	
-			<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="horizontal" >
-				<Button android:text="START" 
-					android:id="@+id/startSubscribeButton" 
-					android:layout_width="0dip"
-					android:layout_height="wrap_content"
-					android:layout_weight="1">
-				</Button>
-				<Button android:text="STOP" android:id="@+id/stopSubscribeButton"
-					android:layout_width="0dip"
-					android:layout_height="wrap_content"
-					android:layout_weight="1">
-				</Button>
-			</LinearLayout>
-    	
-    	</LinearLayout>
-    
-    
+		 </LinearLayout>
+		
     </LinearLayout>
     
     

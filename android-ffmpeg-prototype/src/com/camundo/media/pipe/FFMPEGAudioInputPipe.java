@@ -79,19 +79,34 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
 	
 	
 	public void close() {
+		
+		if ( process != null ) {
+			Log.i( TAG , "[ close() ] destroying process");
+			process.destroy();
+			process = null;
+		}
+		else {
+			Log.i( TAG , "[ close() ] can not destroy process -> is null");
+		}
+		
 		Log.i( TAG , "[ close() ] closing outputstream");
 		try {
-			outputStream.close();
+			synchronized (outputStream) {
+				outputStream.close();
+				Log.i( TAG , "[ close() ] closing outputstream done");
+			}
 		}
 		catch( Exception e ){
 			e.printStackTrace();
 		}
 		//inputStreamReaderThread.finish();
-		errorStreamReaderThread.finish();
-		if ( process != null ) {
-			process.destroy();
-			process = null;
+		try {
+			errorStreamReaderThread.finish();
 		}
+		catch( Exception e ) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
@@ -114,6 +129,12 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
             }
             else {
             	processStartFailed = true;
+            }
+            try {
+            	process.waitFor();
+            }
+            catch( Exception e ) {
+            	e.printStackTrace();
             }
         }
         catch (IOException e) {
