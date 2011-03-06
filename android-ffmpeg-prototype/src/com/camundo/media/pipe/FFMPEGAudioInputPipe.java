@@ -32,6 +32,8 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
 	
 	private static final String TAG = "FFMPEGAudioInputPipe";
 	
+	private static final String IO_ERROR = "I/O error";
+	
 	private Process process;
 	private String command;
 	private boolean processRunning;
@@ -168,11 +170,11 @@ public class FFMPEGAudioInputPipe extends Thread implements AudioInputPipe {
                  BufferedReader br = new BufferedReader(isr, 32);
                  String line;
                  while ((line = br.readLine()) != null) {
-                	 if ( line.indexOf("I/O error") != -1 ) {
+                	 if ( line.indexOf(IO_ERROR) != -1 ) {
                 		 Log.e( TAG , "IOERRRRRORRRRR -> putting to processStartFailed");
                 		 processStartFailed = true;
                 	 }
-                	 Log.d( TAG , line + LINE_SEPARATOR);
+                	 //Log.d( TAG , line + LINE_SEPARATOR);
                  }
             }
             catch( Exception e ) {
